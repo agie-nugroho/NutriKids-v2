@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Bubur Nasi Telur",
+    "ingredients": ["Nasi", "Telur"],
+    "taste": "gurih",
+    "age_group": "1-2years"
+  },
+  {
+    "name": "Puree Pisang",
+    "ingredients": ["Pisang"],
+    "taste": "manis",
+    "age_group": "0-6months"
+  }
+]

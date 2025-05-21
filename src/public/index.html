@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriKidz - Food Recommender</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome untuk ikon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>NutriKidz</h1>
+
+      <!-- Hamburger Button -->
+      <button class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Navigation Menu -->
+      <nav class="navbar-menu" id="navbar">
+        <a href="#/home"><i class="fas fa-home"></i> Home</a>
+        <a href="#/about"><i class="fas fa-info-circle"></i> Tentang</a>
+        <a href="#/features"><i class="fas fa-list-ul"></i> Fitur</a>
+        <a href="#/contact"><i class="fas fa-envelope"></i> Kontak</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <!-- Halaman akan di-render di sini -->
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <h3>NutriKidz</h3>
+        <p>Membantu Orang Tua Memberikan Nutrisi Terbaik untuk Anak</p>
+
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+
+        <p>&copy; 2025 NutriKidz. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        AOS.init();
+      });
+    </script>
+
+    <!-- No need for separate hamburger.js as it's integrated in app.js -->
+  </body>
+</html>
