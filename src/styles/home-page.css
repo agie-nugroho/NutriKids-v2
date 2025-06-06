@@ -1,0 +1,101 @@
+/* src/styles/home-page.css */
+.hero-section {
+  padding: 9rem 0 5rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  position: relative;
+  overflow: hidden;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(74, 222, 128, 0.15),
+    transparent 70%
+  );
+  z-index: 0;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+  z-index: 1;
+  animation: fadeInUp 1s var(--easing);
+  padding-right: var(--space-4);
+}
+
+.hero-image {
+  flex: 1;
+  max-width: 600px;
+  z-index: 1;
+  position: relative;
+  animation: fadeIn 1.5s var(--easing);
+  padding-left: var(--space-4);
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  transform: perspective(1000px) rotateY(-5deg);
+  transition: transform var(--transition) var(--easing);
+}
+
+.hero-image:hover img {
+  transform: perspective(1000px) rotateY(0);
+}
+
+.hero-section p {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-8);
+  color: var(--text-medium);
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2.25rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  text-align: center;
+  transition: all var(--transition) var(--easing);
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: var(--white);
+  margin-right: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.cta-button:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  color: var(--white);
+}
+
+.cta-button.secondary {
+  background: linear-gradient(
+    to right,
+    var(--secondary),
+    var(--secondary-dark)
+  );
+  color: var(--text-dark);
+}
