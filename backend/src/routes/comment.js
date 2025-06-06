@@ -46,7 +46,7 @@ module.exports = [
     
                 return h.response({message: 'Pesan Berhasi di kirim', data: newComment}).code(201);
             } catch (error) {
-                return h.response({ message: 'Terjadi kesalahan', error: err.message }).code(500);
+                return h.response({ message: 'Terjadi kesalahan', error: error.message }).code(500);
             }
         }
     }

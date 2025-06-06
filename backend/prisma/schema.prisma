@@ -2,21 +2,43 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Pake Mysql Xampp 
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model user {
+//   id_user    Int    @id @default(autoincrement())
+//   email_user String @db.VarChar(255)
+//   password   String @db.VarChar(255)
+//   nama_user  String @db.VarChar(255)
+// }
+
+// model comment {
+//   id_comment    Int    @id @default(autoincrement())
+//   nama          String @db.VarChar(255)
+//   email_comment String @db.VarChar(255)
+//   pesan         String @db.Text
+// }
+
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id_user    Int    @id @default(autoincrement())
-  email_user String @db.VarChar(255)
-  password   String @db.VarChar(255)
-  nama_user  String @db.VarChar(255)
+model Comment {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  nama          String
+  pesan         String
+  email_comment String
+
+  @@map("comments")
 }
 
-model comment {
-  id_comment    Int    @id @default(autoincrement())
-  nama          String @db.VarChar(255)
-  email_comment String @db.VarChar(255)
-  pesan         String @db.Text
+model User {
+  id_user  String @id @default(auto()) @map("_id") @db.ObjectId
+  nama     String
+  email    String @unique
+  password String
 }
