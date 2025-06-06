@@ -1,6 +1,8 @@
 const Hapi = require('@hapi/hapi');
 const { PrismaClient } = require('@prisma/client');
 const commentRoutes = require('./routes/comment');
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 
 const prisma = new PrismaClient();
 
@@ -16,6 +18,8 @@ const init = async () => {
     });
 
     server.route(commentRoutes);
+    server.route(authRoutes);
+    server.route(userRoutes);
 
     await server.start();
     console.log('Server running: ', server.info.uri)

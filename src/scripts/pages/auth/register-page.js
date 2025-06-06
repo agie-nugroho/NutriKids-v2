@@ -1,15 +1,17 @@
 // src/pages/auth/register-page.js
 
+import ApiUser from "../../../api";
+
 const RegisterPage = {
   async render() {
     return `
-        <section class="auth-section">
-          <div class="auth-container">
-            <div class="auth-card">
-              <div class="auth-header">
-                <h2>Join NutriKidz</h2>
-                <p>Create your account to start your child's nutrition journey</p>
-              </div>
+       <section class="auth-section">
+        <div class="auth-container">
+          <div class="auth-card">
+            <div class="auth-header">
+              <h2>Join NutriKidz</h2>
+              <p>Create your account to start your child's nutrition journey</p>
+            </div>
               
               <form class="auth-form" id="registerForm">
                 <div class="form-row">
@@ -65,7 +67,7 @@ const RegisterPage = {
                 
                 <div class="form-options">
                   <label class="checkbox-container">
-                    <input type="checkbox" id="agreeTerms" required>
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                     <span class="checkmark"></span>
                     I agree to the <a href="#/terms" target="_blank">Terms of Service</a> and <a href="#/privacy" target="_blank">Privacy Policy</a>
                   </label>
@@ -74,7 +76,7 @@ const RegisterPage = {
                 
                 <div class="form-options">
                   <label class="checkbox-container">
-                    <input type="checkbox" id="subscribeNewsletter">
+                    <input type="checkbox" id="subscribeNewsletter" name="subscribeNewsLetter>
                     <span class="checkmark"></span>
                     Subscribe to our newsletter for nutrition tips and updates
                   </label>
@@ -134,78 +136,103 @@ const RegisterPage = {
     }
   },
 
-  async handleRegister(event) {
-    event.preventDefault();
+  mapChildAgeToEnum(ageString) {
+  switch (ageString) {
+    case "0-6months":
+      return "AGE_0_6_MONTHS";
+    case "6-12months":
+      return "AGE_6_12_MONTHS";
+    case "1-2years":
+      return "AGE_1_2_YEARS";
+    case "2-5years":
+      return "AGE_2_5_YEARS";
+    case "5-12years":
+      return "AGE_5_12_YEARS";
+    default:
+      return null;
+  }
+},
 
-    const registerButton = document.getElementById("registerButton");
-    const buttonText = registerButton.querySelector(".button-text");
-    const loadingSpinner = registerButton.querySelector(".loading-spinner");
+ async handleRegister(event) {
+  event.preventDefault();
 
-    // Show loading state
-    buttonText.style.display = "none";
-    loadingSpinner.style.display = "inline-block";
-    registerButton.disabled = true;
+  const registerButton = document.getElementById("registerButton");
+  const buttonText = registerButton.querySelector(".button-text");
+  const loadingSpinner = registerButton.querySelector(".loading-spinner");
 
-    try {
-      const formData = new FormData(event.target);
-      const registerData = {
-        firstName: formData.get("firstName"),
-        lastName: formData.get("lastName"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        password: formData.get("password"),
-        confirmPassword: formData.get("confirmPassword"),
-        childAge: formData.get("childAge"),
-        agreeTerms: formData.get("agreeTerms") === "on",
-        subscribeNewsletter: formData.get("subscribeNewsletter") === "on",
-      };
+  buttonText.style.display = "none";
+  loadingSpinner.style.display = "inline-block";
+  registerButton.disabled = true;
 
-      // Clear previous errors
-      this.clearErrors();
+  try {
+    const formData = new FormData(event.target);
+    const registerData = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
+      phone: formData.get("phone"),
+      childAge: formData.get("childAge"),
+      agreeTerms: formData.has("agreeTerms"),
+      subscribeNewsletter: formData.has("subscribeNewsletter"),
+    };
 
-      // Validate form
-      if (!this.validateForm(registerData)) {
-        return;
-      }
+    this.clearErrors();
 
-      // Make API call to register
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Show success message
-        this.showMessage(
-          "Account created successfully! Please check your email for verification.",
-          "success"
-        );
-
-        // Redirect to login after success
-        setTimeout(() => {
-          window.location.hash = "#/login";
-        }, 2000);
-      } else {
-        this.showMessage(
-          result.message || "Registration failed. Please try again.",
-          "error"
-        );
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      this.showMessage("Network error. Please check your connection.", "error");
-    } finally {
-      // Reset button state
+    if (!this.validateForm(registerData)) {
       buttonText.style.display = "inline-block";
       loadingSpinner.style.display = "none";
       registerButton.disabled = false;
+      return;
     }
-  },
+
+    const mappedAge = registerData.childAge
+      ? this.mapChildAgeToEnum(registerData.childAge)
+      : null;
+
+    if (registerData.childAge && !mappedAge) {
+      this.showMessage("Please select a valid child age range.", "error");
+      buttonText.style.display = "inline-block";
+      loadingSpinner.style.display = "none";
+      registerButton.disabled = false;
+      return;
+    }
+
+ const response = await ApiUser.post("/register", {
+  firstName: registerData.firstName,
+  lastName: registerData.lastName,
+  email: registerData.email,
+  password: registerData.password,
+  phone: registerData.phone,
+  ageRange: mappedAge,
+  agreeTerms: registerData.agreeTerms,
+  subscribeNewsletter: registerData.subscribeNewsletter,
+});
+
+console.log("Sending register data:", registerData);
+console.log("Server response:", response.data);
+
+const result = response.data;
+
+if (response.status === 201) {
+  this.showMessage("Account created successfully! Please check your email for verification.", "success");
+  setTimeout(() => {
+    window.location.hash = "#/login";
+  }, 2000);
+} else {
+  this.showMessage(result.message || "Registration failed. Please try again.", "error");
+}
+
+  } catch (error) {
+    console.error("Registration error:", error);
+    this.showMessage("Network error. Please check your connection.", "error");
+  } finally {
+    buttonText.style.display = "inline-block";
+    loadingSpinner.style.display = "none";
+    registerButton.disabled = false;
+  }
+},
 
   handleGoogleRegister() {
     // Implement Google OAuth registration

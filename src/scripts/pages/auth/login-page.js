@@ -1,5 +1,8 @@
 // src/pages/auth/login-page.js
 
+import Swal from "sweetalert2";
+import ApiUser from "../../../api";
+
 const LoginPage = {
   async render() {
     return `
@@ -81,113 +84,115 @@ const LoginPage = {
   },
 
   async handleLogin(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const loginButton = document.getElementById("loginButton");
-    const buttonText = loginButton.querySelector(".button-text");
-    const loadingSpinner = loginButton.querySelector(".loading-spinner");
+  const loginButton = document.getElementById("loginButton");
+  const buttonText = loginButton.querySelector(".button-text");
+  const loadingSpinner = loginButton.querySelector(".loading-spinner");
 
-    // Show loading state
-    buttonText.style.display = "none";
-    loadingSpinner.style.display = "inline-block";
-    loginButton.disabled = true;
+  buttonText.style.display = "none";
+  loadingSpinner.style.display = "inline-block";
+  loginButton.disabled = true;
 
-    try {
-      const formData = new FormData(event.target);
-      const loginData = {
-        email: formData.get("email"),
-        password: formData.get("password"),
-        rememberMe: formData.get("rememberMe") === "on",
-      };
+  Swal.fire({
+    title: "Logging in...",
+    text: "Please wait while we log you in",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  })
 
-      // Clear previous errors
-      this.clearErrors();
+  try {
+    const formData = new FormData(event.target);
+    const loginData = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      rememberMe: formData.get("rememberMe") === "on",
+    };
 
-      buttonText.style.display = "inline-block";
-      loadingSpinner.style.display = "none";
-      registerButton.disabled = false;
+    this.clearErrors();
 
-      // Validate form
-      if (!this.validateForm(loginData)) {
-        return;
-      }
-
-      // Make API call to login
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Store token
-        localStorage.setItem("authToken", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user));
-
-        // Show success message
-        this.showMessage("Login successful! Redirecting...", "success");
-
-        // Redirect to dashboard or home
-        setTimeout(() => {
-          window.location.hash = "#/dashboard";
-        }, 1500);
-      } else {
-        this.showMessage(
-          result.message || "Login failed. Please try again.",
-          "error"
-        );
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      this.showMessage("Network error. Please check your connection.", "error");
-    } finally {
-      // Reset button state
+    // VALIDASI DULU
+    if (!this.validateForm(loginData)) {
+      Swal.close();
       buttonText.style.display = "inline-block";
       loadingSpinner.style.display = "none";
       loginButton.disabled = false;
+      return;
     }
-  },
+
+    const response = await ApiUser.post('/login', {
+      email: loginData.email,
+      password: loginData.password,
+      rememberMe: loginData.rememberMe
+    });
+
+    const result = response.data;
+
+    localStorage.setItem("authToken", result.token);
+    localStorage.setItem("user", JSON.stringify(result.user));
+
+    Swal.fire({
+      icon: "success",
+      title: "Login Successful",
+      text: "Redirecting to your dashboard...",
+      showConfirmButton: false,
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      timer: 1500
+    }).then(() => {
+      window.location.hash = "#/dashboard";
+      window.location.reload()
+    })
+  } catch (error) {
+    Swal.close();
+
+    let msg = "Network error. Please check your connection.";
+    if (error.response && error.response.data && error.response.data.message) {
+      msg = error.response.data.message;
+    }
+
+    Swal.fire({
+      icon: "error",
+      title: "Login failed",
+      text: msg
+    });
+  } finally {
+    buttonText.style.display = "inline-block";
+    loadingSpinner.style.display = "none";
+    loginButton.disabled = false;
+  }
+},
+
 
   handleGoogleLogin() {
-    // Implement Google OAuth login
     this.showMessage("Google login will be implemented soon!", "info");
   },
 
   validateForm(data) {
-    let isValid = true;
+  let isValid = true;
 
-    // Email validation
-    if (!data.email) {
-      this.showError("emailError", "Email is required");
-      isValid = false;
-    } else if (!this.isValidEmail(data.email)) {
-      this.showError("emailError", "Please enter a valid email address");
-      isValid = false;
-    }
+  if (!data.email) {
+    this.showError("emailError", "Email is required");
+    isValid = false;
+  } else if (!this.isValidEmail(data.email)) {
+    this.showError("emailError", "Please enter a valid email address");
+    isValid = false;
+  }
 
-    // Password validation
-    if (!data.password) {
-      this.showError("passwordError", "Password is required");
-      isValid = false;
-    } else if (data.password.length < 6) {
-      this.showError("passwordError", "Password must be at least 6 characters");
-      isValid = false;
-    }
+  // Password validation
+  if (!data.password) {
+    this.showError("passwordError", "Password is required");
+    isValid = false;
+  } else if (data.password.length < 6) {
+    this.showError("passwordError", "Password must be at least 6 characters");
+    isValid = false;
+  }
 
-    if (!data.confirmPassword) {
-      this.showError("confirmPasswordError", "Please confirm your password");
-      isValid = false;
-    } else if (data.password !== data.confirmPassword) {
-      this.showError("confirmPasswordError", "Passwords do not match");
-      isValid = false;
-    }
-
-    return isValid;
-  },
+  return isValid;
+},
 
   isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

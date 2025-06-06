@@ -32,13 +32,25 @@ model Comment {
   nama          String
   pesan         String
   email_comment String
-
-  @@map("comments")
 }
 
 model User {
-  id_user  String @id @default(auto()) @map("_id") @db.ObjectId
-  nama     String
-  email    String @unique
-  password String
+  id_user             String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName           String
+  lastName            String
+  email               String   @unique
+  password            String
+  phone               String
+  ageRange            AgeRange? 
+  subscribeNewsletter Boolean  @default(false)
+  agreeTerms          Boolean  @default(false)
+}
+
+
+enum AgeRange {
+  AGE_0_6_MONTHS
+  AGE_6_12_MONTHS
+  AGE_1_2_YEARS
+  AGE_2_5_YEARS
+  AGE_5_12_YEARS
 }
