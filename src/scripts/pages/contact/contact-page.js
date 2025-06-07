@@ -1,4 +1,5 @@
 // src/pages/contact/contact-page.js
+import ApiUser from '../../../api/index.js';
 
 const ContactPage = {
   async render() {
@@ -25,10 +26,28 @@ const ContactPage = {
   afterRender() {
     const form = document.getElementById("contact-form");
     if (form) {
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        document.querySelector(".success-message").style.display = "block";
-        form.reset();
+
+        const formData = new FormData(form)
+        const nama = formData.get("name");
+        const email_comment = formData.get("email");
+        const pesan = formData.get("message");
+
+        try {
+          const response = await ApiUser.post('/comments', {
+            nama,
+            email_comment,
+            pesan
+          });
+
+          console.log("Komentar Berhail Di kirim", response.data);
+          form.reset();
+          alert("Pesan Di kirim")
+        } catch (error) {
+          console.error("Gagal mengirim komentar:", error.message);
+          alert("Terjadi kesalahan saat mengirim komentar.");
+        }
       });
     }
   },
