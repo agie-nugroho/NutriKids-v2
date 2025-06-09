@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NutriKidz - Food Recommender</title>
+    <title>NutriKids - Food Recommender</title>
 
     <!-- Google Fonts -->
     <link
@@ -22,7 +22,7 @@
   </head>
   <body>
     <header>
-      <h1>NutriKidz</h1>
+      <h1>NutriKids</h1>
 
       <!-- Hamburger Button -->
       <button class="hamburger" id="hamburger">
@@ -31,14 +31,14 @@
 
       <!-- Navigation Menu -->
       <nav class="navbar-menu" id="navbar">
-       <span id="userName" style="display:none;"></span>
-       <a href="#/login">Sign In</a>
-       <a href="#/register">Create Account</a>
-       <a href="#/home"><i class="fas fa-home"></i> Home</a>
-       <a href="#/about"><i class="fas fa-info-circle"></i> Tentang</a>
-       <a href="#/features"><i class="fas fa-list-ul"></i> Fitur</a>
-       <a href="#/contact"><i class="fas fa-envelope"></i> Kontak</a>
-       <a href="#/logout" id="logoutBtn" style="display:none;">Logout</a>
+        <span id="userName" style="display: none"></span>
+        <a href="#/login">Sign In</a>
+        <a href="#/register">Create Account</a>
+        <a href="#/home"><i class="fas fa-home"></i> Home</a>
+        <a href="#/about"><i class="fas fa-info-circle"></i> Tentang</a>
+        <a href="#/features"><i class="fas fa-list-ul"></i> Fitur</a>
+        <a href="#/contact"><i class="fas fa-envelope"></i> Kontak</a>
+        <a href="#/logout" id="logoutBtn" style="display: none">Logout</a>
       </nav>
     </header>
 
@@ -48,17 +48,10 @@
 
     <footer>
       <div class="footer-content">
-        <h3>NutriKidz</h3>
+        <h3>NutriKids</h3>
         <p>Membantu Orang Tua Memberikan Nutrisi Terbaik untuk Anak</p>
 
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-
-        <p>&copy; 2025 NutriKidz. All rights reserved.</p>
+        <p>&copy; 2025 NutriKids. All rights reserved.</p>
       </div>
     </footer>
 
@@ -70,43 +63,45 @@
       });
     </script>
     <script>
-    function updateNavbar() {
-      const token = localStorage.getItem("authToken");
-      const user = JSON.parse(localStorage.getItem("user"));
+      function updateNavbar() {
+        const token = localStorage.getItem("authToken");
+        const user = JSON.parse(localStorage.getItem("user"));
 
-      const userNameSpan = document.getElementById("userName");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const signInLink = document.querySelector('a[href="#/login"]');
-      const createAccountLink = document.querySelector('a[href="#/register"]');
+        const userNameSpan = document.getElementById("userName");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const signInLink = document.querySelector('a[href="#/login"]');
+        const createAccountLink = document.querySelector(
+          'a[href="#/register"]'
+        );
 
-      if (token && user) {
-        signInLink.style.display = "none";
-        createAccountLink.style.display = "none";
+        if (token && user) {
+          signInLink.style.display = "none";
+          createAccountLink.style.display = "none";
 
-        userNameSpan.textContent = `Hello, ${user.firstName || user.email}`;
-        userNameSpan.style.display = "inline-block";
-        logoutBtn.style.display = "inline-block";
-      } else {
-        signInLink.style.display = "inline-block";
-        createAccountLink.style.display = "inline-block";
+          userNameSpan.textContent = `Hello, ${user.firstName || user.email}`;
+          userNameSpan.style.display = "inline-block";
+          logoutBtn.style.display = "inline-block";
+        } else {
+          signInLink.style.display = "inline-block";
+          createAccountLink.style.display = "inline-block";
 
-        userNameSpan.style.display = "none";
-        logoutBtn.style.display = "none";
+          userNameSpan.style.display = "none";
+          logoutBtn.style.display = "none";
+        }
       }
-    }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      updateNavbar();
-
-      const logoutBtn = document.getElementById("logoutBtn");
-      logoutBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
+      document.addEventListener("DOMContentLoaded", () => {
         updateNavbar();
-        window.location.hash = "#/login";
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        logoutBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+          updateNavbar();
+          window.location.hash = "#/login";
+        });
       });
-    });
-  </script>
+    </script>
   </body>
 </html>

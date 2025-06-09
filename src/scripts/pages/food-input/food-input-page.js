@@ -11,23 +11,16 @@ const FoodInputPage = {
           <div class="meal-planner-card">
             <h2>NutriKidz - Perencana Makanan</h2>
             
-            <div id="step-1" class="form-step active">
+            <div id="main-form" class="form-step active">
               <div class="form-group">
                 <label for="childName">Nama Anak</label>
                 <input type="text" id="childName" name="name" placeholder="Masukkan nama anak" required />
               </div>
               
               <div class="form-group">
-                <label for="childGender">Jenis Kelamin</label>
-                <select id="childGender" name="gender">
-                  <option value="laki-laki">Laki-laki</option>
-                  <option value="perempuan">Perempuan</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="childAge">Umur Anak</label>
+                <label for="childAge">Usia Anak</label>
                 <select id="childAge" name="age">
+                  <option value="">Pilih usia</option>
                   <option value="0">0 tahun</option>
                   <option value="1">1 tahun</option>
                   <option value="2">2 tahun</option>
@@ -45,258 +38,80 @@ const FoodInputPage = {
               </div>
               
               <div class="form-group">
-                <label for="dailyBudget">Anggaran Harian (untuk 3 kali makan)</label>
+                <label for="childGender">Jenis Kelamin</label>
+                <select id="childGender" name="gender">
+                  <option value="laki-laki">Laki-laki</option>
+                  <option value="perempuan">Perempuan</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="mealTime">Waktu Makan</label>
+                <select id="mealTime" name="mealTime">
+                  <option value="">Pilih waktu makan</option>
+                  <option value="breakfast">Sarapan</option>
+                  <option value="lunch">Makan Siang</option>
+                  <option value="dinner">Makan Malam</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="budget">Budget (Minimal pengeluaran untuk sekali makan)</label>
                 <div class="budget-input-container">
                   <span class="currency-prefix">Rp</span>
-                  <input type="number" id="dailyBudget" name="dailyBudget" min="30000" max="90000" step="1000" value="45000" placeholder="Masukkan anggaran" />
+                  <input type="number" id="budget" name="budget" min="15000" max="50000" step="1000" value="25000" placeholder="Masukkan budget" />
                 </div>
-                <small class="budget-note">Anggaran akan dibagi secara otomatis untuk sarapan, makan siang, dan makan malam</small>
+                <small class="budget-note">Budget untuk satu kali makan (Rp 15.000 - Rp 50.000)</small>
+              </div>
+              
+              <div class="form-group">
+                <label for="taste">Preferensi Rasa</label>
+                <select id="taste" name="taste">
+                  <option value="gurih">Gurih</option>
+                  <option value="manis">Manis</option>
+                  <option value="tawar">Tawar</option>
+                  <option value="sapi">Sapi</option>
+                  <option value="asin">Asin</option>
+                  <option value="segar">Segar</option>
+                  <option value="pahit">Pahit</option>
+                  <option value="pedas">Pedas</option>
+                  <option value="manis asam">Manis Asam</option>
+                  <option value="asam manis">Asam Manis</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label>Pilih Kategori Bahan Makanan</label>
+                <div id="category-tabs" class="category-tabs">
+                  <button type="button" class="category-tab active" data-category="all">Semua</button>
+                  <button type="button" class="category-tab" data-category="serealia">Serealia</button>
+                  <button type="button" class="category-tab" data-category="daging">Daging</button>
+                  <button type="button" class="category-tab" data-category="ikan">Ikan</button>
+                  <button type="button" class="category-tab" data-category="sayur">Sayur</button>
+                  <button type="button" class="category-tab" data-category="buah">Buah</button>
+                  <button type="button" class="category-tab" data-category="kacang">Kacang</button>
+                  <button type="button" class="category-tab" data-category="telur">Telur</button>
+                  <button type="button" class="category-tab" data-category="susu">Susu</button>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label>Pilih Bahan Makanan <span class="required-text">(Bisa pilih banyak)</span></label>
+                <div class="ingredients-search">
+                  <input type="text" id="ingredient-search" placeholder="Cari bahan makanan..." />
+                </div>
+                <div id="ingredients-container" class="ingredients-grid">
+                  <!-- Ingredients will be populated dynamically -->
+                </div>
+              </div>
+              
+              <div class="selected-ingredients-container">
+                <h4>Bahan Makanan yang Dipilih:</h4>
+                <div id="selected-ingredients" class="selected-items"></div>
               </div>
               
               <div class="button-container">
-                <button id="next-step" class="primary-button">Langkah Berikutnya</button>
-              </div>
-            </div>
-            
-            <div id="step-2" class="form-step">
-              <div class="meal-selection-info">
-                <h3>Pilih Bahan Makanan untuk Setiap Jam Makan</h3>
-                <p>Semua jam makan wajib diisi dengan minimal 1 bahan makanan</p>
-                <div class="budget-breakdown">
-                  <span id="budget-per-meal">Anggaran per jam makan: Rp <span id="budget-amount">15,000</span></span>
-                </div>
-              </div>
-              
-              <div id="meal-tabs" class="meal-tabs">
-                <button class="meal-tab-button active" data-meal="breakfast">
-                  <span class="meal-time">6-9 Pagi</span>
-                  <span class="meal-name">Sarapan</span>
-                  <span class="required-indicator" id="breakfast-status">*</span>
-                </button>
-                <button class="meal-tab-button" data-meal="lunch">
-                  <span class="meal-time">11-14</span>
-                  <span class="meal-name">Makan Siang</span>
-                  <span class="required-indicator" id="lunch-status">*</span>
-                </button>
-                <button class="meal-tab-button" data-meal="dinner">
-                  <span class="meal-time">17-20</span>
-                  <span class="meal-name">Makan Malam</span>
-                  <span class="required-indicator" id="dinner-status">*</span>
-                </button>
-              </div>
-              
-              <div id="meal-tab-content" class="meal-tab-content">
-                <div id="breakfast-content" class="meal-content active">
-                  <h3>Pengaturan Sarapan (6:00 - 9:00)</h3>
-                  
-                  <div class="form-group">
-                    <label for="breakfastTaste">Preferensi Rasa</label>
-                    <select id="breakfastTaste" name="breakfastTaste">
-                      <option value="sweet">Manis</option>
-                      <option value="savory">Gurih</option>
-                      <option value="neutral">Netral</option>
-                      <option value="sour">Asam</option>
-                    </select>
-                  </div>
-                  
-                  <h4>Pilih Bahan Sarapan <span class="required-text">(Wajib pilih minimal 1)</span></h4>
-                  <div class="ingredients-grid breakfast-ingredients">
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="eggs">
-                      <div class="ingredient-icon">🥚</div>
-                      <div class="ingredient-name">Telur</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="bread">
-                      <div class="ingredient-icon">🍞</div>
-                      <div class="ingredient-name">Roti</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="oats">
-                      <div class="ingredient-icon">🥣</div>
-                      <div class="ingredient-name">Oatmeal</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="banana">
-                      <div class="ingredient-icon">🍌</div>
-                      <div class="ingredient-name">Pisang</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="apple">
-                      <div class="ingredient-icon">🍎</div>
-                      <div class="ingredient-name">Apel</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="orange">
-                      <div class="ingredient-icon">🍊</div>
-                      <div class="ingredient-name">Jeruk</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="strawberry">
-                      <div class="ingredient-icon">🍓</div>
-                      <div class="ingredient-name">Stroberi</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="rice">
-                      <div class="ingredient-icon">🍚</div>
-                      <div class="ingredient-name">Nasi</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="milk">
-                      <div class="ingredient-icon">🥛</div>
-                      <div class="ingredient-name">Susu</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="breakfast" data-ingredient="cereal">
-                      <div class="ingredient-icon">🥄</div>
-                      <div class="ingredient-name">Sereal</div>
-                    </div>
-                  </div>
-                  
-                  <div class="selected-ingredients-container">
-                    <h4>Bahan Sarapan yang Dipilih:</h4>
-                    <div id="selected-breakfast-ingredients" class="selected-items"></div>
-                  </div>
-                </div>
-                
-                <div id="lunch-content" class="meal-content">
-                  <h3>Pengaturan Makan Siang (11:00 - 14:00)</h3>
-                  
-                  <div class="form-group">
-                    <label for="lunchTaste">Preferensi Rasa</label>
-                    <select id="lunchTaste" name="lunchTaste">
-                      <option value="sweet">Manis</option>
-                      <option value="savory">Gurih</option>
-                      <option value="neutral" selected>Netral</option>
-                      <option value="sour">Asam</option>
-                    </select>
-                  </div>
-                  
-                  <h4>Pilih Bahan Makan Siang <span class="required-text">(Wajib pilih minimal 1)</span></h4>
-                  <div class="ingredients-grid lunch-ingredients">
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="chicken">
-                      <div class="ingredient-icon">🍗</div>
-                      <div class="ingredient-name">Ayam</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="beef">
-                      <div class="ingredient-icon">🥩</div>
-                      <div class="ingredient-name">Daging Sapi</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="fish">
-                      <div class="ingredient-icon">🐟</div>
-                      <div class="ingredient-name">Ikan</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="tofu">
-                      <div class="ingredient-icon">🟡</div>
-                      <div class="ingredient-name">Tahu</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="tempeh">
-                      <div class="ingredient-icon">🟤</div>
-                      <div class="ingredient-name">Tempe</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="carrot">
-                      <div class="ingredient-icon">🥕</div>
-                      <div class="ingredient-name">Wortel</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="broccoli">
-                      <div class="ingredient-icon">🥦</div>
-                      <div class="ingredient-name">Brokoli</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="potato">
-                      <div class="ingredient-icon">🥔</div>
-                      <div class="ingredient-name">Kentang</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="rice">
-                      <div class="ingredient-icon">🍚</div>
-                      <div class="ingredient-name">Nasi</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="lunch" data-ingredient="noodles">
-                      <div class="ingredient-icon">🍜</div>
-                      <div class="ingredient-name">Mie</div>
-                    </div>
-                  </div>
-                  
-                  <div class="selected-ingredients-container">
-                    <h4>Bahan Makan Siang yang Dipilih:</h4>
-                    <div id="selected-lunch-ingredients" class="selected-items"></div>
-                  </div>
-                </div>
-                
-                <div id="dinner-content" class="meal-content">
-                  <h3>Pengaturan Makan Malam (17:00 - 20:00)</h3>
-                  
-                  <div class="form-group">
-                    <label for="dinnerTaste">Preferensi Rasa</label>
-                    <select id="dinnerTaste" name="dinnerTaste">
-                      <option value="sweet">Manis</option>
-                      <option value="savory" selected>Gurih</option>
-                      <option value="neutral">Netral</option>
-                      <option value="sour">Asam</option>
-                    </select>
-                  </div>
-                  
-                  <h4>Pilih Bahan Makan Malam <span class="required-text">(Wajib pilih minimal 1)</span></h4>
-                  <div class="ingredients-grid dinner-ingredients">
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="chicken">
-                      <div class="ingredient-icon">🍗</div>
-                      <div class="ingredient-name">Ayam</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="beef">
-                      <div class="ingredient-icon">🥩</div>
-                      <div class="ingredient-name">Daging Sapi</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="fish">
-                      <div class="ingredient-icon">🐟</div>
-                      <div class="ingredient-name">Ikan</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="egg">
-                      <div class="ingredient-icon">🥚</div>
-                      <div class="ingredient-name">Telur</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="spinach">
-                      <div class="ingredient-icon">🥬</div>
-                      <div class="ingredient-name">Bayam</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="broccoli">
-                      <div class="ingredient-icon">🥦</div>
-                      <div class="ingredient-name">Brokoli</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="peas">
-                      <div class="ingredient-icon">🟢</div>
-                      <div class="ingredient-name">Kacang Polong</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="pasta">
-                      <div class="ingredient-icon">🍝</div>
-                      <div class="ingredient-name">Pasta</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="quinoa">
-                      <div class="ingredient-icon">🌾</div>
-                      <div class="ingredient-name">Quinoa</div>
-                    </div>
-                    <div class="ingredient-item" data-meal="dinner" data-ingredient="sweet-potato">
-                      <div class="ingredient-icon">🍠</div>
-                      <div class="ingredient-name">Ubi</div>
-                    </div>
-                  </div>
-                  
-                  <div class="selected-ingredients-container">
-                    <h4>Bahan Makan Malam yang Dipilih:</h4>
-                    <div id="selected-dinner-ingredients" class="selected-items"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="validation-summary" id="validation-summary">
-                <h4>Status Kelengkapan:</h4>
-                <div class="meal-status-list">
-                  <div class="meal-status" id="breakfast-validation">
-                    <span class="meal-label">Sarapan:</span>
-                    <span class="status-indicator incomplete">Belum lengkap</span>
-                  </div>
-                  <div class="meal-status" id="lunch-validation">
-                    <span class="meal-label">Makan Siang:</span>
-                    <span class="status-indicator incomplete">Belum lengkap</span>
-                  </div>
-                  <div class="meal-status" id="dinner-validation">
-                    <span class="meal-label">Makan Malam:</span>
-                    <span class="status-indicator incomplete">Belum lengkap</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="button-container">
-                <button id="previous-step" class="secondary-button">Sebelumnya</button>
-                <button id="submit-form" class="primary-button" disabled>Dapatkan Rekomendasi</button>
+                <button id="submit-form" class="primary-button">Dapatkan Rekomendasi</button>
               </div>
             </div>
 
@@ -308,466 +123,997 @@ const FoodInputPage = {
   },
 
   async afterRender() {
-    // References to DOM elements
-    const step1 = document.getElementById("step-1");
-    const step2 = document.getElementById("step-2");
-    const nextStepBtn = document.getElementById("next-step");
-    const prevStepBtn = document.getElementById("previous-step");
-    const submitFormBtn = document.getElementById("submit-form");
-    const resultContainer = document.getElementById("recommendation-result");
-    const budgetAmountSpan = document.getElementById("budget-amount");
-
-    // Budget input element
-    const dailyBudget = document.getElementById("dailyBudget");
-
-    // Meal tab elements
-    const mealTabs = document.querySelectorAll(".meal-tab-button");
-    const mealContents = document.querySelectorAll(".meal-content");
-
-    // Form data storage - All meals are required
-    const formData = {
-      name: "",
-      gender: "laki-laki",
-      age: "",
-      dailyBudget: "45000",
-      meals: {
-        breakfast: {
-          taste: "sweet",
-          ingredients: [],
+    // Complete ingredients database with categories
+    const completeIngredientsDatabase = {
+      serealia: [
+        { id: "beras", name: "Beras", icon: "🌾" },
+        { id: "jagung", name: "Jagung", icon: "🌽" },
+        { id: "jali", name: "Jali", icon: "🌾" },
+        { id: "jawawut", name: "Jawawut", icon: "🌾" },
+        { id: "jampang-huma", name: "Jampang Huma", icon: "🌾" },
+      ],
+      daging: [
+        { id: "daging-sapi", name: "Daging Sapi", icon: "🥩" },
+        { id: "daging-ansga", name: "Daging Angsa", icon: "🦢" },
+        { id: "daging-ayam", name: "Daging Ayam", icon: "🍗" },
+        { id: "darah-ayam", name: "Darah Ayam", icon: "🩸" },
+        { id: "hati-ayam", name: "Hati Ayam", icon: "🫘" },
+        { id: "daging-babi", name: "Daging Babi", icon: "🐖" },
+        { id: "ginjal-babi", name: "Ginjal Babi", icon: "🫘" },
+        { id: "hati-babi", name: "Hati Babi", icon: "🫘" },
+        { id: "daging-itik", name: "Daging Itik", icon: "🦆" },
+        { id: "daging-belibis", name: "Daging Belibis", icon: "🦆" },
+        { id: "sarang-burung", name: "Sarang Burung", icon: "🕊️" },
+        { id: "daging-domba", name: "Daging Domba", icon: "🐑" },
+        { id: "ginjal-domba", name: "Ginjal Domba", icon: "🫘" },
+        { id: "daging-kambing", name: "Daging Kambing", icon: "🐐" },
+        { id: "daging-kelinci", name: "Daging Kelinci", icon: "🐰" },
+        { id: "daging-kerbau", name: "Daging Kerbau", icon: "🐂" },
+        { id: "daging-kuda", name: "Daging Kuda", icon: "🐎" },
+        { id: "babat-sapi", name: "Babat Sapi", icon: "🫘" },
+        { id: "delaman-ayam", name: "Delaman Ayam", icon: "🫘" },
+        { id: "darah-sapi", name: "Darah Sapi", icon: "🩸" },
+        { id: "ginjal-sapi", name: "Ginjal Sapi", icon: "🫘" },
+        { id: "keleponan-sapi", name: "Keleponan Sapi", icon: "🫘" },
+        { id: "hati-sapi", name: "Hati Sapi", icon: "🫘" },
+        { id: "otak-sapi", name: "Otak Sapi", icon: "🫘" },
+        { id: "usus-sapi", name: "Usus Sapi", icon: "🫘" },
+        { id: "ulat-sagu", name: "Ulat Sagu", icon: "🪱" },
+        { id: "daging-buaya", name: "Daging Buaya", icon: "🐊" },
+        { id: "daging-menjangan", name: "Daging Menjangan", icon: "🦌" },
+        { id: "daging-penyu", name: "Daging Penyu", icon: "🐢" },
+      ],
+      telur: [
+        { id: "telur-ayam-kampung", name: "Telur Ayam Kampung", icon: "🥚" },
+        { id: "telur-ayam-ras", name: "Telur Ayam Ras", icon: "🥚" },
+        { id: "putih-telur-ayam", name: "Putih Telur Ayam", icon: "🥚" },
+        { id: "kuning-telur-ayam", name: "Kuning Telur Ayam", icon: "🥚" },
+        { id: "telur-bebek-alabio", name: "Telur Bebek Alabio", icon: "🥚" },
+        { id: "kuning-telur-bebek", name: "Kuning Telur Bebek", icon: "🥚" },
+        { id: "putih-telur-bebek", name: "Putih Telur Bebek", icon: "🥚" },
+        { id: "telur-bebek-tambak", name: "Telur Bebek Tambak", icon: "🥚" },
+        { id: "telur-burung-maleo", name: "Telur Burung Maleo", icon: "🥚" },
+        { id: "telur-penyu", name: "Telur Penyu", icon: "🥚" },
+        { id: "telur-burung-puyuh", name: "Telur Burung Puyuh", icon: "🥚" },
+      ],
+      ubi: [
+        { id: "arrowroot", name: "Arrowroot", icon: "🍠" },
+        { id: "batatas-gembili", name: "Batatas Gembili", icon: "🍠" },
+        { id: "batatas-kelapa", name: "Batatas Kelapa", icon: "🍠" },
+        { id: "talas", name: "Talas", icon: "🥔" },
+        { id: "bengkuang", name: "Bengkuang", icon: "🥔" },
+        { id: "gadung-kering", name: "Gadung Kering", icon: "🍠" },
+        { id: "gadung", name: "Gadung", icon: "🍠" },
+        { id: "ganyong", name: "Ganyong", icon: "🍠" },
+        { id: "gembili", name: "Gembili", icon: "🍠" },
+        { id: "ubi-hutan", name: "Ubi Hutan", icon: "🍠" },
+        { id: "kaburan", name: "Kaburan", icon: "🍠" },
+        { id: "kentang", name: "Kentang", icon: "🥔" },
+        { id: "kentang-hitam", name: "Kentang Hitam", icon: "🥔" },
+        { id: "keribang", name: "Keribang", icon: "🍠" },
+        { id: "singkong", name: "Singkong", icon: "🍠" },
+        { id: "ubi-rumput", name: "Ubi Rumput", icon: "🍠" },
+        { id: "sagu-aren-kering", name: "Sagu Aren Kering", icon: "🍠" },
+        { id: "sagu-aren", name: "Sagu Aren", icon: "🍠" },
+        { id: "sagu-kasbi", name: "Sagu Kasbi", icon: "🍠" },
+        { id: "sagu-lempeng", name: "Sagu Lempeng", icon: "🍠" },
+        {
+          id: "sagu-singkong-kering",
+          name: "Sagu Singkong Kering",
+          icon: "🍠",
         },
-        lunch: {
-          taste: "neutral",
-          ingredients: [],
+        { id: "sente", name: "Sente", icon: "🍠" },
+        { id: "suweg", name: "Suweg", icon: "🍠" },
+        { id: "talas-bogor", name: "Talas Bogor", icon: "🥔" },
+        { id: "talas-pontianak", name: "Talas Pontianak", icon: "🥔" },
+        { id: "talas-viqueque", name: "Talas Viqueque", icon: "🥔" },
+        { id: "ubi-jalar-kuning", name: "Ubi Jalar Kuning", icon: "🍠" },
+        { id: "ubi-jalar-manis", name: "Ubi Jalar Manis", icon: "🍠" },
+        { id: "ubi-jalar-merah", name: "Ubi Jalar Merah", icon: "🍠" },
+        { id: "ubi-jalar-putih", name: "Ubi Jalar Putih", icon: "🍠" },
+        { id: "ubi-jalar-tinta", name: "Ubi Jalar Tinta", icon: "🍠" },
+        { id: "umbi-uwi", name: "Umbi Uwi", icon: "🍠" },
+      ],
+      susu: [
+        { id: "krim", name: "Krim", icon: "🥛" },
+        { id: "susu-ibu-asi", name: "Susu Ibu - ASI", icon: "🍼" },
+        { id: "susu-kambing", name: "Susu Kambing", icon: "🥛" },
+        { id: "susu-kerbau", name: "Susu Kerbau", icon: "🥛" },
+        { id: "susu-kuda", name: "Susu Kuda", icon: "🥛" },
+        { id: "susu-sapi", name: "Susu Sapi", icon: "🥛" },
+      ],
+      sayur: [
+        { id: "akar-tonjong", name: "Akar Tonjong", icon: "🌿" },
+        { id: "ale-toge", name: "Ale Toge", icon: "🌱" },
+        { id: "andaliman", name: "Andaliman", icon: "🌿" },
+        { id: "andewi", name: "Andewi", icon: "🌿" },
+        { id: "bakung", name: "Bakung", icon: "🌿" },
+        { id: "baligo", name: "Baligo", icon: "🌿" },
+        { id: "bawang-bombay", name: "Bawang Bombay", icon: "🧅" },
+        { id: "bayam", name: "Bayam", icon: "🥬" },
+        { id: "bayam-merah", name: "Bayam Merah", icon: "🥬" },
+        { id: "bit", name: "Bit", icon: "🫑" },
+        { id: "buah-kelor", name: "Buah Kelor", icon: "🍒" },
+        { id: "buah-merah", name: "Buah Merah", icon: "🍒" },
+        { id: "buncis", name: "Buncis", icon: "🫘" },
+        { id: "bunga-pepaya", name: "Bunga Pepaya", icon: "🌸" },
+        { id: "bunga-turi", name: "Bunga Turi", icon: "🌸" },
+        { id: "caisin", name: "Caisin", icon: "🥬" },
+        { id: "daun-bangun-bangun", name: "Daun Bangun-Bangun", icon: "🌿" },
+        { id: "daun-bawang-merah", name: "Daun Bawang Merah", icon: "🌿" },
+        { id: "daun-bebuas", name: "Daun Bebuas", icon: "🌿" },
+        { id: "daun-belem", name: "Daun Belem", icon: "🌿" },
+        { id: "daun-bluntas", name: "Daun Bluntas", icon: "🌿" },
+        { id: "daun-gandaria", name: "Daun Gandaria", icon: "🌿" },
+        { id: "daun-gedi-besar", name: "Daun Gedi Besar", icon: "🌿" },
+        { id: "daun-gedi-kecil", name: "Daun Gedi Kecil", icon: "🌿" },
+        { id: "daun-gelang", name: "Daun Gelang", icon: "🌿" },
+        { id: "daun-gunda-bali", name: "Daun Gunda Bali", icon: "🌿" },
+        { id: "daun-gunda-serang", name: "Daun Gunda Serang", icon: "🌿" },
+        {
+          id: "daun-jambu-mete-muda",
+          name: "Daun Jambu Mete Muda",
+          icon: "🌿",
         },
-        dinner: {
-          taste: "savory",
-          ingredients: [],
+        { id: "daun-jampang", name: "Daun Jampang", icon: "🌿" },
+        { id: "daun-jawaw-seluang", name: "Daun Jawaw Seluang", icon: "🌿" },
+        { id: "daun-jonghe", name: "Daun Jonghe", icon: "🌿" },
+        { id: "daun-kacang-ma", name: "Daun Kacang Ma", icon: "🌿" },
+        { id: "daun-kacang-panjang", name: "Daun Kacang Panjang", icon: "🌿" },
+        { id: "daun-singkong", name: "Daun Singkong", icon: "🌿" },
+        { id: "karet", name: "Karet", icon: "🌿" },
+        { id: "daun-katuk", name: "Daun Katuk", icon: "🌿" },
+        { id: "daun-kecipir", name: "Daun Kecipir", icon: "🌿" },
+        { id: "daun-kedondong", name: "Daun Kedondong", icon: "🌿" },
+        { id: "daun-kelor", name: "Daun Kelor", icon: "🌿" },
+        { id: "daun-kemang", name: "Daun Kemang", icon: "🌿" },
+        { id: "daun-kenikir", name: "Daun Kenikir", icon: "🌿" },
+        { id: "daun-kesum", name: "Daun Kesum", icon: "🌿" },
+        { id: "daun-kol-sawi", name: "Daun Kol Sawi", icon: "🌿" },
+        { id: "daun-koro", name: "Daun Koro", icon: "🌿" },
+        { id: "daun-kubis", name: "Daun Kubis", icon: "🌿" },
+        { id: "daun-kumak", name: "Daun Kumak", icon: "🌿" },
+        { id: "daun-labu-siam", name: "Daun Labu Siam", icon: "🌿" },
+        { id: "daun-labu", name: "Daun Labu", icon: "🌿" },
+        { id: "waluh-kuning", name: "Waluh/Kuning", icon: "🌿" },
+        { id: "daun-lamtoro", name: "Daun Lamtoro", icon: "🌿" },
+        { id: "daun-leilem", name: "Daun Leilem", icon: "🌿" },
+        { id: "daun-leunca", name: "Daun Leunca", icon: "🌿" },
+        { id: "daun-lobak", name: "Daun Lobak", icon: "🌿" },
+        { id: "daun-lompong-talas", name: "Daun Lompong Talas", icon: "🌿" },
+        { id: "daun-mangkokan", name: "Daun Mangkokan", icon: "🌿" },
+        { id: "daun-matel-ambon", name: "Daun Matel Ambon", icon: "🌿" },
+        { id: "daun-melinjo", name: "Daun Melinjo", icon: "🌿" },
+        { id: "daun-mengkudu", name: "Daun Mengkudu", icon: "🌿" },
+        { id: "daun-ndusuk", name: "Daun Ndusuk", icon: "🌿" },
+        { id: "daun-oyong", name: "Daun Oyong", icon: "🌿" },
+        { id: "daun-pakis", name: "Daun Pakis", icon: "🌿" },
+        { id: "wambateu", name: "Wambateu", icon: "🌿" },
+        { id: "daun-paku", name: "Daun Paku", icon: "🌿" },
+        { id: "daun-pangi", name: "Daun Pangi", icon: "🌿" },
+        { id: "daun-pare", name: "Daun Pare", icon: "🌿" },
+        { id: "daun-pepaya", name: "Daun Pepaya", icon: "🌿" },
+        { id: "daun-pohpohan", name: "Daun Pohpohan", icon: "🌿" },
+        { id: "daun-selasih", name: "Daun Selasih", icon: "🌿" },
+        { id: "daun-semanggi", name: "Daun Semanggi", icon: "🌿" },
+        { id: "daun-simpur", name: "Daun Simpur", icon: "🌿" },
+        { id: "daun-singkil", name: "Daun Singkil", icon: "🌿" },
+        { id: "daun-singkong-ambon", name: "Daun Singkong Ambon", icon: "🌿" },
+        {
+          id: "daun-singkong-ampenan",
+          name: "Daun Singkong Amphenan",
+          icon: "🌿",
         },
-      },
+        {
+          id: "daun-singkong-kopang",
+          name: "Daun Singkong Kopang",
+          icon: "🌿",
+        },
+        { id: "daun-sintrong", name: "Daun Sintrong", icon: "🌿" },
+        { id: "daun-talas", name: "Daun Talas", icon: "🌿" },
+        { id: "daun-tespong", name: "Daun Tespong", icon: "🌿" },
+        { id: "daun-ubi-kuning", name: "Daun Ubi Kuning", icon: "🌿" },
+        { id: "daun-ubi-merah", name: "Daun Ubi Merah", icon: "🌿" },
+        { id: "daun-ubi-putih", name: "Daun Ubi Putih", icon: "🌿" },
+        { id: "daun-ubi-tinta", name: "Daun Ubi Tinta", icon: "🌿" },
+        { id: "eceng", name: "Eceng", icon: "🌿" },
+        { id: "gambas-oyong", name: "Gambas (Oyong)", icon: "🥒" },
+        { id: "genjer", name: "Genjer", icon: "🌿" },
+        { id: "jagung-muda", name: "Jagung Muda / Semi", icon: "🌽" },
+        { id: "jamur-encik", name: "Jamur Encik", icon: "🍄" },
+        { id: "jamur-kuping", name: "Jamur Kuping", icon: "🍄" },
+        { id: "jamur-merang", name: "Jamur Merang", icon: "🍄" },
+        { id: "jamur-tiram", name: "Jamur Tiram", icon: "🍄" },
+        { id: "jamur-sagu", name: "Jamur Sagu", icon: "🍄" },
+        { id: "jantung-pisang", name: "Jantung Pisang", icon: "🍌" },
+        { id: "jengkol", name: "Jengkol", icon: "🫘" },
+        { id: "jotang", name: "Jotang", icon: "🌿" },
+        { id: "kabau", name: "Kabau", icon: "🌿" },
+        { id: "kacang-mekah", name: "Kacang Mejah", icon: "🫘" },
+        { id: "polong", name: "Polong", icon: "🫘" },
+        { id: "kacang-panjang", name: "Kacang Panjang", icon: "🫘" },
+        { id: "kacang-ranti-polong", name: "Kacang Ranti Polong", icon: "🫘" },
+        { id: "kalakai", name: "Kalakai", icon: "🌿" },
+        { id: "kangkung", name: "Kangkung", icon: "🥬" },
+        { id: "kangkung-tondano", name: "Kangkung Tondano", icon: "🥬" },
+        { id: "kapri-muda", name: "Kapri Muda", icon: "🫘" },
+        { id: "karawila", name: "Karawila", icon: "🌿" },
+        { id: "kecipir-muda", name: "Kecipir Muda", icon: "🫘" },
+        { id: "kecombrang", name: "Kecombrang", icon: "🌿" },
+        { id: "kelawi", name: "Kelawi", icon: "🌿" },
+        { id: "kembang-turi", name: "Kembang Turi", icon: "🌸" },
+        { id: "kerokot", name: "Kerokot", icon: "🌿" },
+        { id: "ketimun", name: "Ketimun", icon: "🥒" },
+        { id: "ketimun-krai", name: "Ketimun Krai", icon: "🥒" },
+        { id: "ketimun-madura", name: "Ketimun Madura", icon: "🥒" },
+        { id: "komak", name: "Komak", icon: "🫘" },
+        { id: "kool-kembang", name: "Kool Kembang", icon: "🥦" },
+        { id: "kool-putih", name: "Kool Putih", icon: "🥦" },
+        { id: "kool-merah", name: "Kool Merah", icon: "🥦" },
+        { id: "koro-kerupuk", name: "Koro Kerupuk", icon: "🫘" },
+        { id: "koro-wedus", name: "Koro Wedus", icon: "🫘" },
+        { id: "kucai", name: "Kucai", icon: "🌿" },
+        { id: "kucai-muda-lokio", name: "Kucai Muda (Lokio)", icon: "🌿" },
+        { id: "kulit-melinjo", name: "Kulit Melinjo", icon: "🌿" },
+        { id: "kundur", name: "Kundur", icon: "🌿" },
+        { id: "labu-air", name: "Labu Air", icon: "🥒" },
+        { id: "labu-kuning", name: "Labu Kuning", icon: "🎃" },
+        { id: "labu-siam", name: "Labu Siam", icon: "🥒" },
+        { id: "labu-waluh", name: "Labu Waluh", icon: "🎃" },
+        { id: "lantar", name: "Lantar", icon: "🌿" },
+        { id: "lobak", name: "Lobak", icon: "🥕" },
+        { id: "lumai-leunca", name: "Lumai/Leunca", icon: "🌿" },
+        { id: "melinjo", name: "Melinjo", icon: "🌿" },
+        { id: "sawi", name: "Sawi", icon: "🥬" },
+        { id: "nangka-muda", name: "Nangka Muda", icon: "🍏" },
+        { id: "paria-putih", name: "Paria Putih", icon: "🌿" },
+        { id: "pepare-ular", name: "Pepare Ular", icon: "🥒" },
+        { id: "pepaya-muda", name: "Pepaya Muda", icon: "🟠" },
+        { id: "petai", name: "Petai", icon: "🫘" },
+        { id: "peterseli", name: "Peterseli", icon: "🌿" },
+        { id: "pucuk-lumai-daun", name: "Pucuk Lumai/daun", icon: "🌿" },
+        { id: "leunca", name: "Leunca", icon: "🫘" },
+        { id: "putri-malu", name: "Putri Malu", icon: "🌿" },
+        { id: "rebung", name: "Rebung", icon: "🎋" },
+        { id: "rimbang", name: "Rimbang", icon: "🌿" },
+        { id: "rumput-laut", name: "Rumput Laut", icon: "🌿" },
+        { id: "sawi-putih-pecai", name: "Sawi Putih / Pecai", icon: "🥬" },
+        { id: "sawi-taiwan", name: "Sawi Taiwan", icon: "🥬" },
+        { id: "sawi-tanah", name: "Sawi Tanah", icon: "🥬" },
+        { id: "selada", name: "Selada", icon: "🥬" },
+        { id: "selada-air", name: "Selada Air", icon: "🥬" },
+        { id: "seledri", name: "Seledri", icon: "🌿" },
+        { id: "taoge", name: "Taoge", icon: "🌱" },
+        {
+          id: "taoge-kacang-kedelai",
+          name: "Taoge Kacang Kedelai",
+          icon: "🌱",
+        },
+        {
+          id: "taoge-kacang-tunggak",
+          name: "Taoge Kacang Tunggak",
+          icon: "🌱",
+        },
+        { id: "tebu-terubuk-lilin", name: "Tebu Terubuk (Lilin)", icon: "🌿" },
+        { id: "tekokak-kering", name: "Tekokak Kering", icon: "🌿" },
+        { id: "terong", name: "Terong", icon: "🍆" },
+        { id: "terong-asam", name: "Terong Asam", icon: "🍆" },
+        { id: "terung-belanda", name: "Terung Belanda", icon: "🍆" },
+        { id: "terung-bengkulu", name: "Terung Bengkulu", icon: "🍆" },
+        { id: "terung-hintalo", name: "Terung Hintalo", icon: "🍆" },
+        { id: "terung-panjang", name: "Terung Panjang", icon: "🍆" },
+        { id: "tomat-air", name: "Tomat Air", icon: "🍅" },
+        { id: "tomat-merah", name: "Tomat Merah", icon: "🍅" },
+        { id: "tomat-muda", name: "Tomat Muda", icon: "🍅" },
+        { id: "uceng-bunga-melinjo", name: "Uceng/Bunga Melinjo", icon: "🌸" },
+        { id: "umbut-kelapa", name: "Umbut Kelapa", icon: "🥥" },
+        { id: "umbut-rotan", name: "Umbut Rotan", icon: "🌿" },
+        { id: "wortel", name: "Wortel", icon: "🥕" },
+      ],
+      buah: [
+        { id: "alpukat", name: "Alpukat", icon: "🥑" },
+        { id: "anggur-hutan", name: "Anggur Hutan", icon: "🍇" },
+        { id: "apel-malang", name: "Apel Malang", icon: "🍎" },
+        { id: "apel", name: "Apel", icon: "🍎" },
+        { id: "arbai", name: "Arbai", icon: "🍒" },
+        { id: "belimbing", name: "Belimbing", icon: "🍐" },
+        { id: "biwah", name: "Biwah", icon: "🍒" },
+        { id: "buah-atung", name: "Buah Atung", icon: "🍒" },
+        { id: "buah-kelenting", name: "Buah Kelenting", icon: "🍒" },
+        { id: "buah-kom", name: "Buah Kom", icon: "🍒" },
+        { id: "buah-mentega", name: "Buah Mentega", icon: "🍒" },
+        { id: "buah-naga-merah", name: "Buah Naga Merah", icon: "🍓" },
+        { id: "buah-naga-putih", name: "Buah Naga Putih", icon: "🍓" },
+        { id: "buah-negri", name: "Buah Negri", icon: "🍒" },
+        { id: "buah-nona", name: "Buah Nona", icon: "🍐" },
+        { id: "buah-rotan", name: "Buah Rotan", icon: "🍒" },
+        { id: "buah-rukam", name: "Buah Rukam", icon: "🍒" },
+        { id: "buah-ruruhi", name: "Buah Ruruhi", icon: "🍒" },
+        { id: "buah-tuppa", name: "Buah Tuppa", icon: "🍒" },
+        { id: "carica-papaya", name: "Carica Papaya", icon: "🟠" },
+        { id: "cempedak", name: "Cempedak", icon: "🍐" },
+        { id: "duku", name: "Duku", icon: "🍒" },
+        { id: "durian", name: "Durian", icon: "🟡" },
+        { id: "duwet", name: "Duwet", icon: "🍒" },
+        { id: "embacang", name: "Embacang", icon: "🍒" },
+        { id: "encung-asam", name: "Encung Asam", icon: "🍒" },
+        { id: "erbis", name: "Erbis", icon: "🍒" },
+        { id: "gandaria-masak", name: "Gandaria Masak", icon: "🍒" },
+        { id: "gatep", name: "Gatep", icon: "🍒" },
+        { id: "jambu-air", name: "Jambu Air", icon: "🍐" },
+        { id: "jambu-biji", name: "Jambu Biji", icon: "🍐" },
+        {
+          id: "jambu-biji-putih-tidak-berbiji",
+          name: "Jambu Biji Putih Tidak Berbiji",
+          icon: "🍐",
+        },
+        { id: "jambu-bol", name: "Jambu Bol", icon: "🍐" },
+        { id: "jambu-monyet", name: "Jambu Monyet", icon: "🍐" },
+        { id: "jeruk-bali", name: "Jeruk Bali", icon: "🍊" },
+        { id: "jeruk-banjar", name: "Jeruk Banjar", icon: "🍊" },
+        { id: "jeruk-garut-keprok", name: "Jeruk Garut-Keprok", icon: "🍊" },
+        { id: "jeruk-kalamansi", name: "Jeruk Kalamansi", icon: "🍊" },
+        { id: "jeruk-manis", name: "Jeruk Manis", icon: "🍊" },
+        { id: "jeruk-nipis", name: "Jeruk Nipis", icon: "🍋" },
+        { id: "jeruk-ragi", name: "Jeruk Ragi", icon: "🍊" },
+        { id: "kawista", name: "Kawista", icon: "🍒" },
+        { id: "kedondong-masak", name: "Kedondong Masak", icon: "🍒" },
+        { id: "kedondong", name: "Kedondong", icon: "🍒" },
+        { id: "kelapa-hutan", name: "Kelapa Hutan", icon: "🥥" },
+        { id: "kelapa-muda", name: "Kelapa Muda", icon: "🥥" },
+        { id: "kemang", name: "Kemang", icon: "🍒" },
+        { id: "kesemek", name: "Kesemek", icon: "🍒" },
+        { id: "kokosan", name: "Kokosan", icon: "🥥" },
+        { id: "kranji", name: "Kranji", icon: "🍒" },
+        { id: "langsat", name: "Langsat", icon: "🍒" },
+        { id: "lemon", name: "Lemon", icon: "🍋" },
+        { id: "lontar", name: "Lontar", icon: "🌴" },
+        { id: "mangga", name: "Mangga", icon: "🥭" },
+        { id: "mangga-benggala", name: "Mangga Benggala", icon: "🥭" },
+        { id: "mangga-gedung", name: "Mangga Gedung", icon: "🥭" },
+        { id: "mangga-golek", name: "Mangga Golek", icon: "🥭" },
+        { id: "mangga-harumanis", name: "Mangga Harumanis", icon: "🥭" },
+        { id: "mangga-indramayu", name: "Mangga Indramayu", icon: "🥭" },
+        { id: "mangga-kopek", name: "Mangga Kopek", icon: "🥭" },
+        { id: "mangga-kwini", name: "Mangga Kwini", icon: "🥭" },
+        { id: "mangga-manalagi", name: "Mangga Manalagi", icon: "🥭" },
+        { id: "mangga-muda", name: "Mangga Muda", icon: "🥭" },
+        { id: "manggis", name: "Manggis", icon: "🟣" },
+        { id: "markisa", name: "Markisa", icon: "🟠" },
+        { id: "matoa", name: "Matoa", icon: "🍒" },
+        { id: "melon", name: "Melon", icon: "🍈" },
+        { id: "menteng", name: "Menteng", icon: "🍒" },
+        { id: "nanas-palembang", name: "Nanas Palembang", icon: "🍍" },
+        { id: "nanas", name: "Nanas", icon: "🍍" },
+        { id: "nangka-masak-pohon", name: "Nangka Masak Pohon", icon: "🍏" },
+        { id: "pala", name: "Pala", icon: "🌰" },
+        { id: "pepaya", name: "Pepaya", icon: "🟠" },
+        { id: "pisang-ambon", name: "Pisang Ambon", icon: "🍌" },
+        {
+          id: "pisang-angleng-pisang-ampyang",
+          name: "Pisang Angleng (Pisang Ampyang)",
+          icon: "🍌",
+        },
+        { id: "pisang-ayam", name: "Pisang Ayam", icon: "🍌" },
+        { id: "pisang-gapi", name: "Pisang Gapi", icon: "🍌" },
+        { id: "pisang-goroho", name: "Pisang Goroho", icon: "🍌" },
+        { id: "pisang-hijau", name: "Pisang Hijau", icon: "🍌" },
+        { id: "pisang-kayu", name: "Pisang Kayu", icon: "🍌" },
+        { id: "pisang-kepok", name: "Pisang Kepok", icon: "🍌" },
+        { id: "pisang-ketip", name: "Pisang Ketip", icon: "🍌" },
+        { id: "pisang-kidang", name: "Pisang Kidang", icon: "🍌" },
+        { id: "pisang-lampung", name: "Pisang Lampung", icon: "🍌" },
+        {
+          id: "pisang-mas-bali-ampenan",
+          name: "Pisang Mas Bali Amphenan",
+          icon: "🍌",
+        },
+        {
+          id: "pisang-mas-bali-kopang",
+          name: "Pisang Mas Bali Kopang",
+          icon: "🍌",
+        },
+        { id: "pisang-mas", name: "Pisang Mas", icon: "🍌" },
+        { id: "pisang-raja-sereh", name: "Pisang Raja Sereh", icon: "🍌" },
+        { id: "pisang-rotan", name: "Pisang Rotan", icon: "🍌" },
+        { id: "pisang-talas", name: "Pisang Talas", icon: "🍌" },
+        { id: "pisang-tujuh-bulan", name: "Pisang Tujuh Bulan", icon: "🍌" },
+        { id: "pisang-ua", name: "Pisang Ua", icon: "🍌" },
+        { id: "pisang-uli", name: "Pisang Uli", icon: "🍌" },
+        { id: "purut", name: "Purut", icon: "🍋" },
+        { id: "rambutan-binjai", name: "Rambutan Binjai", icon: "🔴" },
+        { id: "rambutan", name: "Rambutan", icon: "🔴" },
+        { id: "salak-bali", name: "Salak Bali", icon: "🥝" },
+        { id: "salak-medan", name: "Salak Medan", icon: "🥝" },
+        { id: "salak-pondoh", name: "Salak Pondoh", icon: "🥝" },
+        { id: "salak", name: "Salak", icon: "🥝" },
+        { id: "sawo-duren", name: "Sawo Duren", icon: "🍐" },
+        { id: "sawo-kecil", name: "Sawo Kecil", icon: "🍐" },
+        { id: "sawo-manila", name: "Sawo Manila", icon: "🍐" },
+        { id: "semangka", name: "Semangka", icon: "🍉" },
+        { id: "sirsak", name: "Sirsak", icon: "🍐" },
+        { id: "sowa", name: "Sowa", icon: "🍐" },
+        { id: "srikaya", name: "Srikaya", icon: "🍐" },
+        { id: "sukun-muda", name: "Sukun Muda", icon: "🍏" },
+        { id: "sukun-tua", name: "Sukun Tua", icon: "🍏" },
+        { id: "vigus", name: "Vigus", icon: "🍒" },
+        { id: "wani", name: "Wani", icon: "🍒" },
+      ],
+      ikan: [
+        { id: "belut", name: "Belut", icon: "🐟" },
+        { id: "belut-laut", name: "Belut Laut", icon: "🐟" },
+        { id: "cumi-cumi", name: "Cumi-cumi", icon: "🦑" },
+        { id: "ikan-bader", name: "Ikan Bader", icon: "🐟" },
+        { id: "ikan-balong", name: "Ikan Balong", icon: "🐟" },
+        { id: "ikan-bambangan", name: "Ikan Bambangan", icon: "🐟" },
+        { id: "ikan-bandeng", name: "Ikan Bandeng", icon: "🐟" },
+        { id: "ikan-banjar", name: "Ikan Banjar", icon: "🐟" },
+        { id: "ikan-baronang", name: "Ikan Baronang", icon: "🐟" },
+        { id: "ikan-batung", name: "Ikan Batung", icon: "🐟" },
+        { id: "ikan-baung", name: "Ikan Baung", icon: "🐟" },
+        { id: "ikan-bawal", name: "Ikan Bawal", icon: "🐟" },
+        { id: "ikan-belida", name: "Ikan Belida", icon: "🐟" },
+        { id: "ikan-beunteur", name: "Ikan Beunteur", icon: "🐟" },
+        { id: "ikan-biawan", name: "Ikan Biawan", icon: "🐟" },
+        { id: "ikan-bili", name: "Ikan Bili", icon: "🐟" },
+        { id: "ikan-bubara", name: "Ikan Bubara", icon: "🐟" },
+        { id: "ikan-bulan-bulan", name: "Ikan Bulan-Bulan", icon: "🐟" },
+        { id: "ikan-cakalang", name: "Ikan Cakalang", icon: "🐟" },
+        { id: "hati-ikan-cakalang", name: "Hati Ikan Cakalang", icon: "🫘" },
+        {
+          id: "jantung-ikan-cakalang",
+          name: "Jantung Ikan Cakalang",
+          icon: "🫀",
+        },
+        { id: "ikan-daun", name: "Ikan Daun", icon: "🐟" },
+        { id: "ikan-ekor-kuning", name: "Ikan Ekor Kuning", icon: "🐟" },
+        { id: "ikan-gabus", name: "Ikan Gabus", icon: "🐟" },
+        { id: "ikan-heu", name: "Ikan Heu", icon: "🐟" },
+        { id: "ikan-hitam", name: "Ikan Hitam", icon: "🐟" },
+        { id: "ikan-hiu", name: "Ikan Hiu", icon: "🦈" },
+        { id: "ikan-kacangan", name: "Ikan Kacangan", icon: "🐟" },
+        { id: "ikan-kakap", name: "Ikan Kakap", icon: "🐟" },
+        { id: "ikan-kakatua", name: "Ikan Kakatua", icon: "🐟" },
+        { id: "ikan-kalaban", name: "Ikan Kalaban", icon: "🐟" },
+        {
+          id: "ikan-kamera-kakap-merah",
+          name: "Ikan Kamera (Kakap Merah)",
+          icon: "🐟",
+        },
+        { id: "ikan-kapar", name: "Ikan Kapar", icon: "🐟" },
+        { id: "ikan-kawalinya", name: "Ikan Kawalinya", icon: "🐟" },
+        { id: "ikan-keru-keru", name: "Ikan Keru-Keru", icon: "🐟" },
+        { id: "ikan-kima", name: "Ikan Kima", icon: "🐚" },
+        { id: "ikan-lais", name: "Ikan Lais", icon: "🐟" },
+        { id: "ikan-layang", name: "Ikan Layang", icon: "🐟" },
+        { id: "ikan-layur", name: "Ikan Layur", icon: "🐟" },
+        { id: "ikan-lehoma", name: "Ikan Lehoma", icon: "🐟" },
+        { id: "ikan-lemuru", name: "Ikan Lemuru", icon: "🐟" },
+        { id: "ikan-lidah", name: "Ikan Lidah", icon: "🐟" },
+        { id: "ikan-malalugis", name: "Ikan Malalugis", icon: "🐟" },
+        { id: "ikan-mamar-merah", name: "Ikan Mamar Merah", icon: "🐟" },
+        { id: "ikan-mas", name: "Ikan Mas", icon: "🐟" },
+        { id: "ikan-mayong", name: "Ikan Mayong", icon: "🐟" },
+        { id: "ikan-mujahir", name: "Ikan Mujahir", icon: "🐟" },
+        { id: "ikan-nasu-metti", name: "Ikan Nasu Metti", icon: "🐟" },
+        { id: "ikan-oci-kembung", name: "Ikan Oci / Kembung", icon: "🐟" },
+        { id: "ikan-paling", name: "Ikan Paling", icon: "🐟" },
+        { id: "ikan-papuyu", name: "Ikan Papuyu", icon: "🐟" },
+        { id: "ikan-patin", name: "Ikan Patin", icon: "🐟" },
+        { id: "ikan-pomo", name: "Ikan Pomo", icon: "🐟" },
+        { id: "ikan-puntin", name: "Ikan Puntin", icon: "🐟" },
+        { id: "ikan-saluang", name: "Ikan Saluang", icon: "🐟" },
+        { id: "ikan-sarden", name: "Ikan Sarden", icon: "🐟" },
+        { id: "ikan-selar", name: "Ikan Selar", icon: "🐟" },
+        { id: "ikan-sepat", name: "Ikan Sepat", icon: "🐟" },
+        { id: "ikan-sidat", name: "Ikan Sidat", icon: "🐟" },
+        { id: "ikan-sunu", name: "Ikan Sunu", icon: "🐟" },
+        { id: "ikan-tahuman", name: "Ikan Tahuman", icon: "🐟" },
+        { id: "ikan-tarmon", name: "Ikan Tarmon", icon: "🐟" },
+        { id: "ikan-telan", name: "Ikan Telan", icon: "🐟" },
+        { id: "ikan-tembang", name: "Ikan Tembang", icon: "🐟" },
+        { id: "ikan-tempahas", name: "Ikan Tempahas", icon: "🐟" },
+        { id: "ikan-terbang", name: "Ikan Terbang", icon: "🐟" },
+        { id: "ikan-teri", name: "Ikan Teri", icon: "🐟" },
+        { id: "ikan-titang", name: "Ikan Titang", icon: "🐟" },
+        { id: "ikan-tongkol", name: "Ikan Tongkol", icon: "🐟" },
+        { id: "ikan-turi", name: "Ikan Turi", icon: "🐟" },
+        { id: "keong", name: "Keong", icon: "🐚" },
+        { id: "kepiting", name: "Kepiting", icon: "🦀" },
+        { id: "kerang", name: "Kerang", icon: "🐚" },
+        { id: "kodok", name: "Kodok", icon: "🐸" },
+        { id: "kura-kura", name: "Kura-kura", icon: "🐢" },
+        { id: "kuro", name: "Kuro", icon: "🐟" },
+        { id: "lokan", name: "Lokan", icon: "🐚" },
+        { id: "rajungan", name: "Rajungan", icon: "🦀" },
+        { id: "rebon", name: "Rebon", icon: "🦐" },
+        { id: "segar", name: "Segar", icon: "🐟" },
+        { id: "rusip", name: "Rusip", icon: "🐟" },
+        { id: "udang-galah", name: "Udang Galah", icon: "🦐" },
+        { id: "udang-besar", name: "Udang, Besar", icon: "🦐" },
+        { id: "udang", name: "Udang", icon: "🦐" },
+      ],
+      kacang: [
+        { id: "kacang-arab-kering", name: "Kacang Arab Kering", icon: "🥜" },
+        { id: "kacang-babi-kering", name: "Kacang Babi Kering", icon: "🥜" },
+        {
+          id: "kacang-belimbing-kering",
+          name: "Kacang Belimbing Kering",
+          icon: "🥜",
+        },
+        { id: "kacang-beracun", name: "Kacang Beracun", icon: "🥜" },
+        { id: "kacang-bogor", name: "Kacang Bogor", icon: "🥜" },
+        { id: "kacang-endel-kering", name: "Kacang Endel Kering", icon: "🥜" },
+        { id: "kacang-ercis", name: "Kacang Ercis", icon: "🫘" },
+        { id: "kacang-galing", name: "Kacang Galing", icon: "🥜" },
+        { id: "kacang-gude", name: "Kacang Gude", icon: "🥜" },
+        {
+          id: "kacang-hijau-var-bakti",
+          name: "Kacang Hijau Var Bakti",
+          icon: "🫘",
+        },
+        {
+          id: "kacang-hijau-var-siwalik",
+          name: "Kacang Hijau Var Siwalik",
+          icon: "🫘",
+        },
+        { id: "kacang-hijau-kering", name: "Kacang Hijau Kering", icon: "🫘" },
+        { id: "kacang-hitam-kering", name: "Kacang Hitam Kering", icon: "🫘" },
+        { id: "kacang-kapri", name: "Kacang Kapri", icon: "🫘" },
+        {
+          id: "kacang-kedelai-kering",
+          name: "Kacang Kedelai Kering",
+          icon: "🫘",
+        },
+        { id: "kacang-kedelai", name: "Kacang Kedelai", icon: "🫘" },
+        { id: "kacang-kincai-kering", name: "Kacang Kincai Kering", icon: "🫘" },
+        { id: "kacang-komak", name: "Kacang Komak", icon: "🫘" },
+        { id: "kacang-kuning-kering", name: "Kacang Kuning Kering", icon: "🫘" },
+        { id: "kacang-lebui-iris", name: "Kacang Lebui / Iris", icon: "🫘" },
+        {
+          id: "kacang-mentega-kering",
+          name: "Kacang Mentega Kering",
+          icon: "🫘",
+        },
+        { id: "kacang-merah-banda", name: "Kacang Merah / Banda", icon: "🫘" },
+        {
+          id: "kacang-merah-tua-kering",
+          name: "Kacang Merah Tua, Kering",
+          icon: "🫘",
+        },
+        { id: "kacang-merah", name: "Kacang Merah", icon: "🫘" },
+        {
+          id: "kacang-mete-biji-jambu-monyet",
+          name: "Kacang Mete / Biji Jambu Monyet",
+          icon: "🥜",
+        },
+        { id: "biji-kacang-panjang", name: "Biji Kacang Panjang", icon: "🫘" },
+        { id: "kacang-tanah-sangan", name: "Kacang Tanah Sangan", icon: "🥜" },
+        { id: "kacang-tanah", name: "Kacang Tanah", icon: "🥜" },
+        { id: "kacang-tolo-tunggak", name: "Kacang Tolo / Tunggak", icon: "🫘" },
+        { id: "kacang-tunis", name: "Kacang Tunis", icon: "🫘" },
+        { id: "kacang-uci", name: "Kacang Uci", icon: "🫘" },
+        { id: "kacang-urei", name: "Kacang Urei", icon: "🫘" },
+        { id: "kenari-banda", name: "Kenari Banda", icon: "🥜" },
+        { id: "kenari", name: "Kenari", icon: "🥜" },
+        { id: "komak-polong", name: "Komak Polong", icon: "🫘" },
+        { id: "koro-andong", name: "Koro Andong", icon: "🫘" },
+        { id: "biji-boro-benguk", name: "Biji Boro Benguk", icon: "🫘" },
+        { id: "biji-koro-kerupuk", name: "Biji Koro Kerupuk", icon: "🫘" },
+        { id: "biji-koro-loke", name: "Biji Koro Loke", icon: "🫘" },
+        { id: "koro-roay-kering", name: "Koro Roay Kering", icon: "🫘" },
+        { id: "koro-wedus-kering", name: "Koro Wedus Kering", icon: "🫘" },
+        { id: "lamtoro-biji-muda", name: "Lamtoro Biji Muda", icon: "🫘" },
+        { id: "lamtoro-biji-tua", name: "Lamtoro Biji Tua", icon: "🫘" },
+        { id: "saga-merah-terkupas", name: "Saga Merah Terkupas", icon: "🫘" },
+        { id: "wijen", name: "Wijen", icon: "🥜" },
+      ],
+      minyak: [
+        {
+          id: "daging-kelapa-setengah-tua",
+          name: "Daging Kelapa Setengah Tua",
+          icon: "🫗",
+        },
+        { id: "daging-kelapa-tua", name: "Daging Kelapa Tua", icon: "🫗" },
+        { id: "lemak-babi-lard", name: "Lemak Babi (Lard)", icon: "lard" },
+        { id: "lemak-babi-bacon", name: "Lemak Babi (Bacon)", icon: "🥓" },
+        { id: "lemak-ikan", name: "Lemak Ikan", icon: "🫗" },
+        {
+          id: "lemak-kerbau-lemak-sapi",
+          name: "Lemak Kerbau (Lemak Sapi)",
+          icon: "lard",
+        },
+        { id: "minyak-hati-hiu", name: "Minyak Hati Hiu", icon: "🫗" },
+        { id: "minyak-ikan", name: "Minyak Ikan", icon: "🫗" },
+        { id: "minyak-kacang-tanah", name: "Minyak Kacang Tanah", icon: "🫗" },
+        { id: "minyak-kedelai", name: "Minyak Kedelai", icon: "🫗" },
+        { id: "minyak-kelapa", name: "Minyak Kelapa", icon: "🫗" },
+        { id: "minyak-kelapa-sawit", name: "Minyak Kelapa Sawit", icon: "🫗" },
+        { id: "minyak-wijen", name: "Minyak Wijen", icon: "🫗" },
+        { id: "minyak-zaitun", name: "Minyak Zaitun", icon: "🫗" },
+      ],
+      bumbu: [
+        { id: "asam-arang-coklat", name: "Asam Arang Coklat", icon: "🍋" },
+        { id: "asam-arang-merah", name: "Asam Arang Merah", icon: "🍋" },
+        { id: "asan-kandis", name: "Asan Kandis", icon: "🍋" },
+        { id: "asam-masak-pohon", name: "Asam Masak Pohon", icon: "🍋" },
+        { id: "asam-payak", name: "Asam Payak", icon: "🍋" },
+        { id: "bawang-merah", name: "Bawang Merah", icon: "🧅" },
+        { id: "bawang-putih", name: "Bawang Putih", icon: "🧄" },
+        { id: "boros-kunci", name: "Boros Kunci", icon: "🌿" },
+        {
+          id: "boros-laja-lengkuas",
+          name: "Boros Laja (Lengkuas)",
+          icon: "🌿",
+        },
+        { id: "cabai-gembor-merah", name: "Cabai Gembor Merah", icon: "🌶️" },
+        { id: "cabai-hijau", name: "Cabai Hijau", icon: "🌶️" },
+        { id: "cabai-merah-kering", name: "Cabai Merah Kering", icon: "🌶️" },
+        { id: "cabai-merah-segar", name: "Cabai Merah Segar", icon: "🌶️" },
+        { id: "cabai-rawit-segar", name: "Cabai Rawit Segar", icon: "🌶️" },
+        { id: "cengkeh-kering", name: "Cengkeh Kering", icon: "🌿" },
+        { id: "daun-salam-bubuk", name: "Daun Salam Bubuk", icon: "🌿" },
+        { id: "jahe", name: "Jahe", icon: "🫚" },
+        { id: "kemiri", name: "Kemiri", icon: "🥥" },
+        { id: "ketumbar-kering", name: "Ketumbar Kering", icon: "🌿" },
+        { id: "kluwek", name: "Kluwek", icon: "🌰" },
+        { id: "kunyit", name: "Kunyit", icon: "🧡" },
+        { id: "merica-kering", name: "Merica Kering", icon: "⚫" },
+        { id: "biji-pala-kering", name: "Biji Pala Kering", icon: "🌰" },
+      ],
     };
 
-    // Update budget display when input changes
-    if (dailyBudget) {
-      dailyBudget.addEventListener("input", () => {
-        formData.dailyBudget = dailyBudget.value;
-        updateBudgetDisplay();
-      });
-    }
+    // Meal-time specific ingredients (filtered from complete database)
+    const mealTimeIngredients = {
+      breakfast: [
+        ...completeIngredientsDatabase.serealia.slice(0, 3),
+        ...completeIngredientsDatabase.telur,
+        ...completeIngredientsDatabase.susu,
+        ...completeIngredientsDatabase.buah.slice(0, 6),
+        { id: "roti", name: "Roti", icon: "🍞" },
+        { id: "oatmeal", name: "Oatmeal", icon: "🥣" },
+        { id: "sereal", name: "Sereal", icon: "🥄" },
+        { id: "yogurt", name: "Yogurt", icon: "🥛" },
+        { id: "madu", name: "Madu", icon: "🍯" },
+      ],
+      lunch: [
+        ...completeIngredientsDatabase.daging.slice(0, 4),
+        ...completeIngredientsDatabase.ikan.slice(0, 5),
+        ...completeIngredientsDatabase.sayur.slice(0, 8),
+        ...completeIngredientsDatabase.serealia.slice(0, 2),
+        ...completeIngredientsDatabase.ubi.slice(0, 3),
+        ...completeIngredientsDatabase.kacang.slice(0, 4),
+      ],
+      dinner: [
+        ...completeIngredientsDatabase.daging.slice(0, 3),
+        ...completeIngredientsDatabase.ikan.slice(0, 4),
+        ...completeIngredientsDatabase.sayur.slice(0, 10),
+        ...completeIngredientsDatabase.telur.slice(0, 2),
+        ...completeIngredientsDatabase.ubi.slice(0, 4),
+        { id: "pasta", name: "Pasta", icon: "🍝" },
+        { id: "quinoa", name: "Quinoa", icon: "🌾" },
+      ],
+    };
 
-    function updateBudgetDisplay() {
-      const totalBudget = parseInt(formData.dailyBudget) || 45000;
-      const perMealBudget = Math.floor(totalBudget / 3);
-      budgetAmountSpan.textContent = perMealBudget.toLocaleString("id-ID");
-    }
+    // References to DOM elements
+    const submitFormBtn = document.getElementById("submit-form");
+    const resultContainer = document.getElementById("recommendation-result");
+    const ingredientsContainer = document.getElementById(
+      "ingredients-container"
+    );
+    const selectedIngredientsContainer = document.getElementById(
+      "selected-ingredients"
+    );
+    const categoryTabs = document.querySelectorAll(".category-tab");
+    const ingredientSearch = document.getElementById("ingredient-search");
 
-    // Initialize budget display
-    updateBudgetDisplay();
+    // Form data storage
+    const formData = {
+      name: "",
+      age: "",
+      gender: "laki-laki",
+      mealTime: "",
+      budget: "25000",
+      taste: "gurih",
+      ingredients: [],
+    };
 
-    // Handle navigation between steps
-    if (nextStepBtn) {
-      nextStepBtn.addEventListener("click", () => {
-        // Get step 1 data
-        formData.name = document.getElementById("childName").value;
-        formData.gender = document.getElementById("childGender").value;
-        formData.age = document.getElementById("childAge").value;
+    let currentMealTime = "";
+    let currentCategory = "all";
+    let currentIngredients = [];
 
-        // Validate step 1
-        if (!formData.name.trim()) {
-          alert("Mohon masukkan nama anak Anda");
-          return;
-        }
+    // Handle meal time selection change
+    const mealTimeSelect = document.getElementById("mealTime");
+    mealTimeSelect.addEventListener("change", (e) => {
+      formData.mealTime = e.target.value;
+      currentMealTime = e.target.value;
+      updateIngredientsDisplay();
+      // Clear previously selected ingredients when meal time changes
+      formData.ingredients = [];
+      updateSelectedIngredientsDisplay();
+    });
 
-        // Validate budget input
-        const budgetValue = parseInt(dailyBudget.value);
-        if (isNaN(budgetValue) || budgetValue < 30000 || budgetValue > 90000) {
-          alert("Mohon masukkan anggaran antara Rp 30.000 hingga Rp 90.000");
-          return;
-        }
-
-        // Move to step 2
-        step1.classList.remove("active");
-        step2.classList.add("active");
-
-        // Update validation status
-        updateValidationStatus();
-      });
-    }
-
-    if (prevStepBtn) {
-      prevStepBtn.addEventListener("click", () => {
-        step2.classList.remove("active");
-        step1.classList.add("active");
-      });
-    }
-
-    // Tab navigation
-    mealTabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        const mealType = tab.dataset.meal;
-        activateTab(mealType);
+    // Handle category tab clicks
+    categoryTabs.forEach((tab) => {
+      tab.addEventListener("click", (e) => {
+        // Remove active class from all tabs
+        categoryTabs.forEach((t) => t.classList.remove("active"));
+        // Add active class to clicked tab
+        e.target.classList.add("active");
+        currentCategory = e.target.dataset.category;
+        updateIngredientsDisplay();
       });
     });
 
-    function activateTab(mealType) {
-      // Deactivate all tabs and contents
-      mealTabs.forEach((t) => t.classList.remove("active"));
-      mealContents.forEach((c) => c.classList.remove("active"));
-
-      // Activate selected tab and content
-      document
-        .querySelector(`.meal-tab-button[data-meal="${mealType}"]`)
-        ?.classList.add("active");
-      document.getElementById(`${mealType}-content`)?.classList.add("active");
-    }
-
-    // Handle ingredient selection for each meal type
-    const allIngredientItems = document.querySelectorAll(".ingredient-item");
-    allIngredientItems.forEach((item) => {
-      item.addEventListener("click", () => {
-        const mealType = item.dataset.meal;
-        const ingredient = item.dataset.ingredient;
-
-        if (item.classList.contains("selected")) {
-          // Remove ingredient
-          item.classList.remove("selected");
-          formData.meals[mealType].ingredients = formData.meals[
-            mealType
-          ].ingredients.filter((ing) => ing !== ingredient);
-        } else {
-          // Add ingredient
-          item.classList.add("selected");
-          formData.meals[mealType].ingredients.push(ingredient);
-        }
-
-        updateSelectedIngredientsDisplay(mealType);
-        updateValidationStatus();
-        updateTabStatus(mealType);
-      });
+    // Handle ingredient search
+    ingredientSearch.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      updateIngredientsDisplay(searchTerm);
     });
 
-    // Setup taste preference change handlers
-    document
-      .getElementById("breakfastTaste")
-      .addEventListener("change", (e) => {
-        formData.meals.breakfast.taste = e.target.value;
-      });
+    // Update ingredients display based on meal time, category, and search
+    function updateIngredientsDisplay(searchTerm = "") {
+      if (!currentMealTime || !mealTimeIngredients[currentMealTime]) {
+        ingredientsContainer.innerHTML =
+          '<p class="select-meal-first">Pilih waktu makan terlebih dahulu</p>';
+        return;
+      }
 
-    document.getElementById("lunchTaste").addEventListener("change", (e) => {
-      formData.meals.lunch.taste = e.target.value;
-    });
+      let ingredients = mealTimeIngredients[currentMealTime];
 
-    document.getElementById("dinnerTaste").addEventListener("change", (e) => {
-      formData.meals.dinner.taste = e.target.value;
-    });
+      // Filter by category if not "all"
+      if (currentCategory !== "all") {
+        ingredients = completeIngredientsDatabase[currentCategory] || [];
+      }
 
-    function updateSelectedIngredientsDisplay(mealType) {
-      // Get the container for the specific meal
-      const container = document.getElementById(
-        `selected-${mealType}-ingredients`
-      );
-      if (!container) return;
+      // Filter by search term
+      if (searchTerm) {
+        ingredients = ingredients.filter((ingredient) =>
+          ingredient.name.toLowerCase().includes(searchTerm)
+        );
+      }
 
-      // Clear current display
-      container.innerHTML = "";
+      currentIngredients = ingredients;
 
-      // Add each selected ingredient as a pill
-      formData.meals[mealType].ingredients.forEach((ingredient) => {
-        const pill = document.createElement("div");
-        pill.className = "ingredient-pill";
-        pill.innerHTML = `${ingredient} <span class="remove-ingredient" data-meal="${mealType}" data-ingredient="${ingredient}">✕</span>`;
-        container.appendChild(pill);
-      });
+      if (ingredients.length === 0) {
+        ingredientsContainer.innerHTML =
+          '<p class="no-ingredients">Tidak ada bahan makanan yang sesuai</p>';
+        return;
+      }
 
-      // Add event listeners to remove buttons
-      document
-        .querySelectorAll(`.remove-ingredient[data-meal="${mealType}"]`)
-        .forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            const ingredientToRemove = e.target.dataset.ingredient;
-            const mealTypeToUpdate = e.target.dataset.meal;
+      ingredientsContainer.innerHTML = ingredients
+        .map(
+          (ingredient) => `
+          <div class="ingredient-item ${
+            formData.ingredients.some((ing) => ing.id === ingredient.id)
+              ? "selected"
+              : ""
+          }" 
+               data-ingredient="${ingredient.id}">
+            <div class="ingredient-icon">${ingredient.icon}</div>
+            <div class="ingredient-name">${ingredient.name}</div>
+          </div>
+        `
+        )
+        .join("");
 
-            // Remove from data
-            formData.meals[mealTypeToUpdate].ingredients = formData.meals[
-              mealTypeToUpdate
-            ].ingredients.filter((ing) => ing !== ingredientToRemove);
+      // Add click event listeners to ingredient items
+      ingredientsContainer
+        .querySelectorAll(".ingredient-item")
+        .forEach((item) => {
+          item.addEventListener("click", () => {
+            const ingredientId = item.dataset.ingredient;
+            const ingredient = ingredients.find(
+              (ing) => ing.id === ingredientId
+            );
 
-            // Deselect in grid
-            document
-              .querySelector(
-                `.ingredient-item[data-meal="${mealTypeToUpdate}"][data-ingredient="${ingredientToRemove}"]`
-              )
-              .classList.remove("selected");
+            if (item.classList.contains("selected")) {
+              // Remove ingredient
+              item.classList.remove("selected");
+              formData.ingredients = formData.ingredients.filter(
+                (ing) => ing.id !== ingredientId
+              );
+            } else {
+              // Add ingredient
+              item.classList.add("selected");
+              formData.ingredients.push(ingredient);
+            }
 
-            // Update display
-            updateSelectedIngredientsDisplay(mealTypeToUpdate);
-            updateValidationStatus();
-            updateTabStatus(mealTypeToUpdate);
+            updateSelectedIngredientsDisplay();
           });
         });
     }
 
-    function updateTabStatus(mealType) {
-      const tabButton = document.querySelector(`.meal-tab-button[data-meal="${mealType}"]`);
-      const statusIndicator = document.getElementById(`${mealType}-status`);
-      
-      if (formData.meals[mealType].ingredients.length > 0) {
-        tabButton.classList.add("completed");
-        statusIndicator.textContent = "✓";
-        statusIndicator.style.color = "#4CAF50";
-      } else {
-        tabButton.classList.remove("completed");
-        statusIndicator.textContent = "*";
-        statusIndicator.style.color = "#f44336";
+    // Update selected ingredients display
+    function updateSelectedIngredientsDisplay() {
+      if (formData.ingredients.length === 0) {
+        selectedIngredientsContainer.innerHTML =
+          '<p class="no-selection">Belum ada bahan yang dipilih</p>';
+        return;
       }
+
+      selectedIngredientsContainer.innerHTML = formData.ingredients
+        .map(
+          (ingredient) => `
+          <div class="ingredient-pill">
+            ${ingredient.icon} ${ingredient.name} 
+            <span class="remove-ingredient" data-ingredient="${ingredient.id}">✕</span>
+          </div>
+        `
+        )
+        .join("");
+
+      // Add remove functionality
+      selectedIngredientsContainer
+        .querySelectorAll(".remove-ingredient")
+        .forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const ingredientId = e.target.dataset.ingredient;
+
+            // Remove from formData
+            formData.ingredients = formData.ingredients.filter(
+              (ing) => ing.id !== ingredientId
+            );
+
+            // Remove selection from ingredients grid
+            const ingredientItem = ingredientsContainer.querySelector(
+              `[data-ingredient="${ingredientId}"]`
+            );
+            if (ingredientItem) {
+              ingredientItem.classList.remove("selected");
+            }
+
+            updateSelectedIngredientsDisplay();
+          });
+        });
     }
 
-    function updateValidationStatus() {
-      const meals = ["breakfast", "lunch", "dinner"];
-      let allComplete = true;
+    // Handle form input changes
+    document.getElementById("childName").addEventListener("input", (e) => {
+      formData.name = e.target.value;
+    });
 
-      meals.forEach((mealType) => {
-        const validationElement = document.getElementById(`${mealType}-validation`);
-        const statusElement = validationElement.querySelector(".status-indicator");
-        
-        if (formData.meals[mealType].ingredients.length > 0) {
-          statusElement.textContent = "Lengkap ✓";
-          statusElement.className = "status-indicator complete";
-        } else {
-          statusElement.textContent = "Belum lengkap";
-          statusElement.className = "status-indicator incomplete";
-          allComplete = false;
-        }
-      });
+    document.getElementById("childAge").addEventListener("change", (e) => {
+      formData.age = e.target.value;
+    });
 
-      // Enable/disable submit button
-      submitFormBtn.disabled = !allComplete;
-      
-      if (allComplete) {
-        submitFormBtn.textContent = "Dapatkan Rekomendasi";
-        submitFormBtn.classList.remove("disabled");
-      } else {
-        submitFormBtn.textContent = "Lengkapi Semua Jam Makan";
-        submitFormBtn.classList.add("disabled");
-      }
-    }
+    document.getElementById("childGender").addEventListener("change", (e) => {
+      formData.gender = e.target.value;
+    });
+
+    document.getElementById("budget").addEventListener("input", (e) => {
+      formData.budget = e.target.value;
+    });
+
+    document.getElementById("taste").addEventListener("change", (e) => {
+      formData.taste = e.target.value;
+    });
 
     // Handle form submission
     if (submitFormBtn) {
       submitFormBtn.addEventListener("click", async () => {
-        // Final validation
-        const allMealsComplete = Object.values(formData.meals).every(
-          meal => meal.ingredients.length > 0
-        );
-
-        if (!allMealsComplete) {
-          alert("Mohon lengkapi bahan makanan untuk semua jam makan (sarapan, makan siang, dan makan malam)");
+        // Validation
+        if (!formData.name.trim()) {
+          alert("Mohon masukkan nama anak");
           return;
         }
 
-        resultContainer.innerHTML = `<div class="loading">🔍 Sedang mencari rekomendasi untuk semua jam makan...</div>`;
+        if (!formData.age) {
+          alert("Mohon pilih usia anak");
+          return;
+        }
 
-        // Calculate per-meal budget (divided equally among 3 meals)
-        const perMealBudget = Math.floor(parseInt(formData.dailyBudget) / 3);
+        if (!formData.mealTime) {
+          alert("Mohon pilih waktu makan");
+          return;
+        }
 
-        // Prepare API requests for all meal types
-        const mealTypes = ["breakfast", "lunch", "dinner"];
-        const requests = mealTypes.map(async (mealType) => {
-          let mealName;
-          switch (mealType) {
-            case "breakfast":
-              mealName = "sarapan";
-              break;
-            case "lunch":
-              mealName = "makan siang";
-              break;
-            case "dinner":
-              mealName = "makan malam";
-              break;
-            default:
-              mealName = mealType;
-          }
+        if (formData.ingredients.length === 0) {
+          alert("Mohon pilih minimal satu bahan makanan");
+          return;
+        }
 
-          let tasteName;
-          switch (formData.meals[mealType].taste) {
-            case "sweet":
-              tasteName = "manis";
-              break;
-            case "savory":
-              tasteName = "gurih";
-              break;
-            case "neutral":
-              tasteName = "netral";
-              break;
-            case "sour":
-              tasteName = "asam";
-              break;
-            default:
-              tasteName = formData.meals[mealType].taste;
-          }
+        const budgetValue = parseInt(formData.budget);
+        if (isNaN(budgetValue) || budgetValue < 15000 || budgetValue > 50000) {
+          alert("Mohon masukkan budget antara Rp 15.000 hingga Rp 50.000");
+          return;
+        }
 
-          const payload = {
-            name: formData.name,
-            gender: formData.gender,
-            age: formData.age,
-            "meal-time": mealName,
-            budget: perMealBudget.toString(),
-            taste: tasteName,
-            ingredients: formData.meals[mealType].ingredients.join(", "),
-          };
+        // Show loading
+        resultContainer.innerHTML = `<div class="loading">🔍 Sedang mencari rekomendasi makanan...</div>`;
 
-          try {
-            const response = await fetch(
-              "http://127.0.0.1:5000/api/recommend",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-              }
-            );
+        // Convert meal time to Indonesian
+        let mealTimeIndonesian;
+        switch (formData.mealTime) {
+          case "breakfast":
+            mealTimeIndonesian = "sarapan";
+            break;
+          case "lunch":
+            mealTimeIndonesian = "makan siang";
+            break;
+          case "dinner":
+            mealTimeIndonesian = "makan malam";
+            break;
+          default:
+            mealTimeIndonesian = formData.mealTime;
+        }
 
-            return {
-              mealType: mealType,
-              result: await response.json(),
-              success: response.ok,
-            };
-          } catch (error) {
-            return {
-              mealType: mealType,
-              error: error,
-              success: false,
-            };
-          }
-        });
+        // Prepare API payload
+        const payload = {
+          name: formData.name,
+          gender: formData.gender,
+          age: formData.age,
+          "meal-time": mealTimeIndonesian,
+          budget: formData.budget,
+          taste: formData.taste,
+          ingredients: formData.ingredients.map((ing) => ing.name).join(", "),
+        };
 
-        // Wait for all requests to complete
         try {
-          const results = await Promise.all(requests);
+          const response = await fetch("http://127.0.0.1:5000/api/recommend", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-          // Build result HTML for all meals
-          let resultHTML = "";
-          let hasAnyResults = false;
+          const result = await response.json();
 
-          // Process results in the order: breakfast, lunch, dinner
-          const orderedMealTypes = ["breakfast", "lunch", "dinner"];
-          
-          for (const mealType of orderedMealTypes) {
-            const result = results.find(r => r.mealType === mealType);
-            
-            if (
-              result.success &&
-              result.result.recommendations &&
-              result.result.recommendations.length > 0
-            ) {
-              hasAnyResults = true;
-
-              const menus = result.result.recommendations
-                .map(
-                  (menu) => `
-                  <div class="menu-card" data-aos="fade-up">
-                    <img src="${menu.image}" alt="${menu.name}" />
-                    <div class="menu-info">
-                      <p class="menu-name">${menu.name}</p>
-                    </div>
-                  </div>
-                `
-                )
-                .join("");
-
-              let mealTitle, mealTime;
-              switch (result.mealType) {
-                case "breakfast":
-                  mealTitle = "Sarapan";
-                  mealTime = "6:00 - 9:00";
-                  break;
-                case "lunch":
-                  mealTitle = "Makan Siang";
-                  mealTime = "11:00 - 14:00";
-                  break;
-                case "dinner":
-                  mealTitle = "Makan Malam";
-                  mealTime = "17:00 - 20:00";
-                  break;
-                default:
-                  mealTitle = result.mealType;
-                  mealTime = "";
-              }
-
-              const selectedIngredients = formData.meals[mealType].ingredients.join(", ");
-
-              resultHTML += `
-                <div class="meal-recommendation">
-                  <div class="meal-header">
-                    <h4>${mealTitle}</h4>
-                    <div class="meal-details">
-                      <span class="meal-time-badge">${mealTime}</span>
-                      <span class="meal-budget">Anggaran: Rp ${perMealBudget.toLocaleString("id-ID")}</span>
-                    </div>
-                  </div>
-                  <div class="meal-ingredients">
-                    <strong>Bahan yang dipilih:</strong> ${selectedIngredients}
-                  </div>
-                  <div class="menu-grid">${menus}</div>
-                </div>
-              `;
-            } else {
-              let mealTitle, mealTime;
-              switch (result.mealType) {
-                case "breakfast":
-                  mealTitle = "Sarapan";
-                  mealTime = "6:00 - 9:00";
-                  break;
-                case "lunch":
-                  mealTitle = "Makan Siang";
-                  mealTime = "11:00 - 14:00";
-                  break;
-                case "dinner":
-                  mealTitle = "Makan Malam";
-                  mealTime = "17:00 - 20:00";
-                  break;
-                default:
-                  mealTitle = result.mealType;
-                  mealTime = "";
-              }
-
-              const selectedIngredients = formData.meals[mealType].ingredients.join(", ");
-
-              resultHTML += `
-                <div class="meal-recommendation">
-                  <div class="meal-header">
-                    <h4>${mealTitle}</h4>
-                    <div class="meal-details">
-                      <span class="meal-time-badge">${mealTime}</span>
-                      <span class="meal-budget">Anggaran: Rp ${perMealBudget.toLocaleString("id-ID")}</span>
-                    </div>
-                  </div>
-                  <div class="meal-ingredients">
-                    <strong>Bahan yang dipilih:</strong> ${selectedIngredients}
-                  </div>
-                  <div class="no-results">
-                    <p>Tidak ada rekomendasi yang ditemukan untuk ${mealTitle}.</p>
-                    <p>Coba pilih bahan yang berbeda atau ubah preferensi Anda.</p>
+          if (
+            response.ok &&
+            result.recommendations &&
+            result.recommendations.length > 0
+          ) {
+            // Display recommendations
+            const menus = result.recommendations
+              .map(
+                (menu) => `
+                <div class="menu-card" data-aos="fade-up">
+                  <img src="${menu.image}" alt="${menu.name}" />
+                  <div class="menu-info">
+                    <p class="menu-name">${menu.name}</p>
                   </div>
                 </div>
-              `;
-            }
-          }
+              `
+              )
+              .join("");
 
-          if (hasAnyResults) {
+            const mealTimeDisplay = {
+              breakfast: "Sarapan (6:00 - 9:00)",
+              lunch: "Makan Siang (11:00 - 14:00)",
+              dinner: "Makan Malam (17:00 - 20:00)",
+            };
+
             resultContainer.innerHTML = `
               <div class="recommendation-header">
-                <h3>🍽️ Rencana Makanan Harian untuk ${formData.name}</h3>
-                <div class="daily-summary">
-                  <div class="budget-summary">
-                    <span class="total-budget">Total Anggaran: Rp ${parseInt(formData.dailyBudget).toLocaleString("id-ID")}</span>
-                    <span class="per-meal-budget">Per Jam Makan: Rp ${perMealBudget.toLocaleString("id-ID")}</span>
+                <h3>🍽️ Rekomendasi Makanan untuk ${formData.name}</h3>
+                <div class="recommendation-details">
+                  <div class="detail-item">
+                    <strong>Waktu Makan:</strong> ${
+                      mealTimeDisplay[formData.mealTime]
+                    }
+                  </div>
+                  <div class="detail-item">
+                    <strong>Budget:</strong> Rp ${parseInt(
+                      formData.budget
+                    ).toLocaleString("id-ID")}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Preferensi Rasa:</strong> ${formData.taste}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Bahan Terpilih:</strong> ${formData.ingredients
+                      .map((ing) => ing.name)
+                      .join(", ")}
                   </div>
                 </div>
               </div>
-              <div class="meals-timeline">
-                ${resultHTML}
+              <div class="menu-grid">
+                ${menus}
               </div>
               <div class="recommendation-footer">
-                <p class="footer-note">💡 Rekomendasi ini disesuaikan dengan usia ${formData.age} tahun dan anggaran harian Anda</p>
+                <p class="footer-note">💡 Rekomendasi ini disesuaikan dengan usia ${
+                  formData.age
+                } tahun dan preferensi yang dipilih</p>
               </div>
             `;
           } else {
@@ -775,12 +1121,12 @@ const FoodInputPage = {
               <div class="no-results-container">
                 <h3>Tidak Ada Rekomendasi Ditemukan</h3>
                 <div class="no-results">
-                  <p>Maaf, tidak ada rekomendasi yang sesuai dengan kriteria Anda untuk semua jam makan.</p>
+                  <p>Maaf, tidak ada rekomendasi yang sesuai dengan kriteria Anda.</p>
                   <p>Silakan coba:</p>
                   <ul>
                     <li>Pilih bahan makanan yang berbeda</li>
                     <li>Ubah preferensi rasa</li>
-                    <li>Sesuaikan anggaran harian</li>
+                    <li>Sesuaikan budget</li>
                   </ul>
                 </div>
               </div>
@@ -802,8 +1148,8 @@ const FoodInputPage = {
       });
     }
 
-    // Initialize validation status on page load
-    updateValidationStatus();
+    // Initialize with empty ingredients display
+    updateIngredientsDisplay();
   },
 };
 

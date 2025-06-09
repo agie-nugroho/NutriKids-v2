@@ -18,51 +18,101 @@ const RegisterPage = {
                 <div class="form-row">
                   <div class="form-group">
                     <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required placeholder="Enter first name">
+                    <input 
+                      type="text" 
+                      id="firstName" 
+                      name="firstName" 
+                      required 
+                      placeholder="e.g. John"
+                      autocomplete="given-name"
+                      title="Enter your first name (minimum 2 characters)"
+                      minlength="2"
+                    >
                     <span class="error-message" id="firstNameError"></span>
                   </div>
                   
                   <div class="form-group">
                     <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required placeholder="Enter last name">
+                    <input 
+                      type="text" 
+                      id="lastName" 
+                      name="lastName" 
+                      required 
+                      placeholder="e.g. Smith"
+                      autocomplete="family-name"
+                      title="Enter your last name (minimum 2 characters)"
+                      minlength="2"
+                    >
                     <span class="error-message" id="lastNameError"></span>
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="email">Email Address</label>
-                  <input type="email" id="email" name="email" required placeholder="Enter your email">
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    title="Enter a valid email address for account verification"
+                  >
                   <span class="error-message" id="emailError"></span>
                 </div>
                 
                 <div class="form-group">
                   <label for="phone">Phone Number</label>
-                  <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="co: +628193429324"
+                    autocomplete="tel"
+                    title="Enter your phone number (optional, for account recovery)"
+                  >
                   <span class="error-message" id="phoneError"></span>
                 </div>
                 
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <input type="password" id="password" name="password" required placeholder="Create a password">
+                  <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Min 8 chars with A-Z, a-z, 0-9, !@#$"
+                    autocomplete="new-password"
+                    title="Password must be at least 8 characters with uppercase, lowercase, number, and special character"
+                    minlength="8"
+                  >
                   <span class="error-message" id="passwordError"></span>
                   <div class="password-strength" id="passwordStrength"></div>
                 </div>
                 
                 <div class="form-group">
                   <label for="confirmPassword">Confirm Password</label>
-                  <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                  <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    required 
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    title="Re-enter the same password to confirm"
+                  >
                   <span class="error-message" id="confirmPasswordError"></span>
                 </div>
                 
                 <div class="form-group">
                   <label for="childAge">Child's Age (Optional)</label>
-                  <select id="childAge" name="childAge">
+                  <select id="childAge" name="childAge" title="Select your child's age range for personalized nutrition tips">
                     <option value="">Select age range</option>
-                    <option value="0-6months">0-6 months</option>
-                    <option value="6-12months">6-12 months</option>
-                    <option value="1-2years">1-2 years</option>
-                    <option value="2-5years">2-5 years</option>
-                    <option value="5-12years">5-12 years</option>
+                    <option value="0-6months">0-6 months (Breast milk/Formula)</option>
+                    <option value="6-12months">6-12 months (Starting solids)</option>
+                    <option value="1-2years">1-2 years (Toddler nutrition)</option>
+                    <option value="2-5years">2-5 years (Preschool nutrition)</option>
+                    <option value="5-12years">5-12 years (School-age nutrition)</option>
                   </select>
                 </div>
                 
@@ -89,15 +139,6 @@ const RegisterPage = {
                     <i class="fas fa-spinner fa-spin"></i>
                   </span>
                 </button>
-                
-                <div class="auth-divider">
-                  <span>or</span>
-                </div>
-                
-                <button type="button" class="auth-button google-button" id="googleRegister">
-                  <i class="fab fa-google"></i>
-                  Sign up with Google
-                </button>
               </form>
               
               <div class="auth-footer">
@@ -116,7 +157,6 @@ const RegisterPage = {
   initializeEventListeners() {
     const registerForm = document.getElementById("registerForm");
     const passwordInput = document.getElementById("password");
-    const googleRegisterButton = document.getElementById("googleRegister");
 
     if (registerForm) {
       registerForm.addEventListener("submit", this.handleRegister.bind(this));
@@ -128,149 +168,142 @@ const RegisterPage = {
         this.checkPasswordStrength.bind(this)
       );
     }
-
-    if (googleRegisterButton) {
-      googleRegisterButton.addEventListener(
-        "click",
-        this.handleGoogleRegister.bind(this)
-      );
-    }
   },
 
   mapChildAgeToEnum(ageString) {
-  switch (ageString) {
-    case "0-6months":
-      return "AGE_0_6_MONTHS";
-    case "6-12months":
-      return "AGE_6_12_MONTHS";
-    case "1-2years":
-      return "AGE_1_2_YEARS";
-    case "2-5years":
-      return "AGE_2_5_YEARS";
-    case "5-12years":
-      return "AGE_5_12_YEARS";
-    default:
-      return null;
-  }
-},
-
- async handleRegister(event) {
-  event.preventDefault();
-
-  const registerButton = document.getElementById("registerButton");
-  const buttonText = registerButton.querySelector(".button-text");
-  const loadingSpinner = registerButton.querySelector(".loading-spinner");
-
-  buttonText.style.display = "none";
-  loadingSpinner.style.display = "inline-block";
-  registerButton.disabled = true;
-
-  Swal.fire({
-    title: 'Creating your account...',
-    text: 'Please wait while we set up your account',
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    didOpen: () => {
-      Swal.showLoading();
+    switch (ageString) {
+      case "0-6months":
+        return "AGE_0_6_MONTHS";
+      case "6-12months":
+        return "AGE_6_12_MONTHS";
+      case "1-2years":
+        return "AGE_1_2_YEARS";
+      case "2-5years":
+        return "AGE_2_5_YEARS";
+      case "5-12years":
+        return "AGE_5_12_YEARS";
+      default:
+        return null;
     }
-  })
+  },
 
-  try {
-    const formData = new FormData(event.target);
-    const registerData = {
-      firstName: formData.get("firstName"),
-      lastName: formData.get("lastName"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      confirmPassword: formData.get("confirmPassword"),
-      phone: formData.get("phone"),
-      childAge: formData.get("childAge"),
-      agreeTerms: formData.has("agreeTerms"),
-      subscribeNewsletter: formData.has("subscribeNewsletter"),
-    };
+  async handleRegister(event) {
+    event.preventDefault();
 
-    this.clearErrors();
+    const registerButton = document.getElementById("registerButton");
+    const buttonText = registerButton.querySelector(".button-text");
+    const loadingSpinner = registerButton.querySelector(".loading-spinner");
 
-    if (!this.validateForm(registerData)) {
-      Swal.close();
-      buttonText.style.display = "inline-block";
-      loadingSpinner.style.display = "none";
-      registerButton.disabled = false;
-      return;
-    }
+    buttonText.style.display = "none";
+    loadingSpinner.style.display = "inline-block";
+    registerButton.disabled = true;
 
-    const mappedAge = registerData.childAge
-      ? this.mapChildAgeToEnum(registerData.childAge)
-      : null;
-
-    if (registerData.childAge && !mappedAge) {
-      this.showMessage("Please select a valid child age range.", "error");
-      buttonText.style.display = "inline-block";
-      loadingSpinner.style.display = "none";
-      registerButton.disabled = false;
-      return;
-    }
-
- const response = await ApiUser.post("/register", {
-  firstName: registerData.firstName,
-  lastName: registerData.lastName,
-  email: registerData.email,
-  password: registerData.password,
-  phone: registerData.phone,
-  ageRange: mappedAge,
-  agreeTerms: registerData.agreeTerms,
-  subscribeNewsletter: registerData.subscribeNewsletter,
-});
-
-console.log("Sending register data:", registerData);
-console.log("Server response:", response.data);
-
-const result = response.data;
-
-if (response.status === 201) {
-  Swal.fire({
-    icon: 'success',
-    title: 'Registration Successful',
-    text: 'Your account has been created successfully! Please check your email for verification.',
-    showConfirmButton: false,
-    allowEscapeKey: false,
-    allowOutsideClick: false,
-    timer: 2000
-  }).then(() => {
-    window.location.hash = "#/login";
-    window.location.reload(); 
-  })
-} else {
-  Swal.close();
-  Swal.fire({
-    icon: 'error',
-    title: 'Registration Failed',
-    text: result.message || "An error occurred during registration. Please try again.",
-    showConfirmButton: true,
-    allowEscapeKey: false,
-    allowOutsideClick: false
-  });
-}
-  } catch (error) {
-    Swal.close();
-    console.error("Registration error:", error);
     Swal.fire({
-      icon: "error",
-      title: "Registration Failed",
-      text: error.response?.data?.message || "An unexpected error occurred. Please try again.",
-      showConfirmButton: true,
+      title: "Creating your account...",
+      text: "Please wait while we set up your account",
+      allowOutsideClick: false,
       allowEscapeKey: false,
-      allowOutsideClick: false
+      didOpen: () => {
+        Swal.showLoading();
+      },
     });
-  } finally {
-    buttonText.style.display = "inline-block";
-    loadingSpinner.style.display = "none";
-    registerButton.disabled = false;
-  }
-},
 
-  handleGoogleRegister() {
-    this.showMessage("Google registration will be implemented soon!", "info");
+    try {
+      const formData = new FormData(event.target);
+      const registerData = {
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+        confirmPassword: formData.get("confirmPassword"),
+        phone: formData.get("phone"),
+        childAge: formData.get("childAge"),
+        agreeTerms: formData.has("agreeTerms"),
+        subscribeNewsletter: formData.has("subscribeNewsletter"),
+      };
+
+      this.clearErrors();
+
+      if (!this.validateForm(registerData)) {
+        Swal.close();
+        buttonText.style.display = "inline-block";
+        loadingSpinner.style.display = "none";
+        registerButton.disabled = false;
+        return;
+      }
+
+      const mappedAge = registerData.childAge
+        ? this.mapChildAgeToEnum(registerData.childAge)
+        : null;
+
+      if (registerData.childAge && !mappedAge) {
+        this.showMessage("Please select a valid child age range.", "error");
+        buttonText.style.display = "inline-block";
+        loadingSpinner.style.display = "none";
+        registerButton.disabled = false;
+        return;
+      }
+
+      const response = await ApiUser.post("/register", {
+        firstName: registerData.firstName,
+        lastName: registerData.lastName,
+        email: registerData.email,
+        password: registerData.password,
+        phone: registerData.phone,
+        ageRange: mappedAge,
+        agreeTerms: registerData.agreeTerms,
+        subscribeNewsletter: registerData.subscribeNewsletter,
+      });
+
+      console.log("Sending register data:", registerData);
+      console.log("Server response:", response.data);
+
+      const result = response.data;
+
+      if (response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful",
+          text: "Your account has been created successfully! Please check your email for verification.",
+          showConfirmButton: false,
+          allowEscapeKey: false,
+          allowOutsideClick: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.hash = "#/login";
+          window.location.reload();
+        });
+      } else {
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text:
+            result.message ||
+            "An error occurred during registration. Please try again.",
+          showConfirmButton: true,
+          allowEscapeKey: false,
+          allowOutsideClick: false,
+        });
+      }
+    } catch (error) {
+      Swal.close();
+      console.error("Registration error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text:
+          error.response?.data?.message ||
+          "An unexpected error occurred. Please try again.",
+        showConfirmButton: true,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+      });
+    } finally {
+      buttonText.style.display = "inline-block";
+      loadingSpinner.style.display = "none";
+      registerButton.disabled = false;
+    }
   },
 
   validateForm(data) {

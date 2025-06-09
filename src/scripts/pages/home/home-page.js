@@ -7,7 +7,7 @@ const HomePage = {
       <section class="hero-section">
         <div class="hero-content">
           <h1>Healthy Meals Tailored for Your Child</h1>
-          <p>NutriKidz uses artificial intelligence to create personalized meal plans for children from 0 months to 12 years, ensuring optimal nutrition based on their age, preferences, and your budget.</p>
+          <p>NutriKids uses artificial intelligence to create personalized meal plans for children from 0 months to 12 years, ensuring optimal nutrition based on their age, preferences, and your budget.</p>
           <a href="#/food-input" class="cta-button">Get Started</a>
           <a href="#/features" class="cta-button secondary">Learn More</a>
         </div>
@@ -17,7 +17,7 @@ const HomePage = {
       </section>
       <section class="features-section">
         <h2>Amazing Features</h2>
-        <p>Discover how NutriKidz can help your child grow healthy and strong with our advanced features.</p>
+        <p>Discover how NutriKids can help your child grow healthy and strong with our advanced features.</p>
         <div class="feature-cards">
           <div class="feature-card">
             <i class="fas fa-brain icon"></i>

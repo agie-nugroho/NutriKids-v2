@@ -4,7 +4,7 @@ const FeaturesPage = {
   async render() {
     return `
       <section class="features-section">
-        <h2>Kenapa Harus NutriKidz?</h2>
+        <h2>Kenapa Harus NutriKids?</h2>
         <p class="subtitle">Platform rekomendasi makanan anak berbasis AI yang memberikan solusi praktis dan sehat untuk orang tua modern.</p>
 
         <div class="feature-cards">

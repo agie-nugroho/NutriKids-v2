@@ -4,8 +4,8 @@ const AboutPage = {
   async render() {
     return `
       <section class="about-section">
-        <h2>Tentang NutriKidz</h2>
-        <p>NutriKidz adalah platform rekomendasi makanan anak berbasis AI yang dirancang untuk membantu orang tua memberikan nutrisi terbaik bagi anak-anak mereka.</p>
+        <h2>Tentang NutriKids</h2>
+        <p>NutriKids adalah platform rekomendasi makanan anak berbasis AI yang dirancang untuk membantu orang tua memberikan nutrisi terbaik bagi anak-anak mereka.</p>
 
         <div class="about-features">
           <div class="feature-card">

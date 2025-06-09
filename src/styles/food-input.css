@@ -1,192 +1,362 @@
-/* src/styles/components/food-input.css */
-
-/* Food Input Form Styles */
-.input-form-section {
+/* === SECTION: Meal Planner Section === */
+.meal-planner-section {
   padding: var(--space-24) var(--space-6);
-  background: linear-gradient(
-    135deg,
-    var(--background-light),
-    var(--background-alt)
-  );
+  background: linear-gradient(135deg, #f8fdf9, #e6fbf2);
 }
 
-.input-form {
-  max-width: 700px;
+.container {
+  max-width: 1000px;
   margin: 0 auto;
-  background: var(--white);
-  padding: var(--space-8);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  padding: 0 var(--space-4);
 }
 
-.input-form label {
-  display: block;
-  margin-bottom: var(--space-2);
-  font-weight: 600;
-  color: var(--primary-dark);
+h1,
+h2 {
+  color: var(--text-dark);
+  font-weight: 700;
+  text-align: center;
 }
 
-.input-form input,
-.input-form select {
-  width: 100%;
-  padding: var(--space-4);
-  margin-bottom: var(--space-6);
-  border: 1px solid var(--gray-300);
-  border-radius: var(--radius-md);
+.subtitle {
+  text-align: center;
   font-size: 1rem;
-  transition: all var(--transition-fast) var(--easing);
+  color: var(--text-medium);
+  margin-bottom: var(--space-6);
 }
 
-.input-form input:focus,
-.input-form select:focus {
+/* === FORM CARD === */
+.meal-planner-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+  transition: box-shadow var(--transition);
+}
+
+.meal-planner-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.form-step {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: var(--space-4);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  color: var(--text-dark);
+}
+
+.required-text {
+  color: var(--secondary-dark);
+  font-style: italic;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+input[type="search"] {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
   outline: none;
+  transition: border-color var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+input[type="search"]:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
-.input-form button {
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
-  color: var(--white);
-  padding: var(--space-4) var(--space-8);
+.budget-input-container {
+  position: relative;
+}
+
+.currency-prefix {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-light);
+}
+
+input[type="number"] {
+  padding-left: var(--space-8);
+}
+
+.budget-note {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--text-medium);
+  font-size: 0.875rem;
+}
+
+/* === CATEGORY TABS === */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.category-tab {
+  background: var(--gray-100);
   border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition);
+}
+
+.category-tab.active {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* === INGREDIENT SEARCH === */
+.ingredients-search input {
+  width: 100%;
+  margin-bottom: var(--space-3);
+}
+
+/* === INGREDIENT GRID === */
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+  min-height: 150px;
+}
+
+.select-meal-first,
+.no-ingredients {
+  text-align: center;
+  color: var(--text-light);
+  padding: var(--space-6);
+  font-style: italic;
+}
+
+/* === INGREDIENT ITEM === */
+.ingredient-item {
+  background: var(--gray-50);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  user-select: none;
+}
+
+.ingredient-item:hover {
+  background: var(--gray-100);
+  border-color: var(--primary-light);
+}
+
+.ingredient-item.selected {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary-dark);
+}
+
+.ingredient-icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-1);
+}
+
+.ingredient-name {
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* === SELECTED INGREDIENTS CONTAINER === */
+.selected-ingredients-container {
+  margin-top: var(--space-4);
+}
+
+.selected-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: var(--space-2) 0;
+}
+
+.ingredient-pill {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.remove-ingredient {
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--white);
+  opacity: 0.8;
+}
+
+.remove-ingredient:hover {
+  opacity: 1;
+}
+
+/* === BUTTON STYLES === */
+.button-container {
+  margin-top: var(--space-6);
+  display: flex;
+  justify-content: center;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: var(--space-3) var(--space-8);
   border-radius: var(--radius-full);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition) var(--easing);
-  display: block;
-  width: 100%;
-  margin-top: var(--space-6);
+  transition: background var(--transition), transform var(--transition);
+}
+
+.primary-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
+
+/* === RECOMMENDATION RESULT BOX === */
+.result-box {
+  margin-top: var(--space-8);
+  background: var(--background-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   box-shadow: var(--shadow-md);
 }
 
-.input-form button:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-3px);
+.recommendation-header {
+  margin-bottom: var(--space-6);
 }
 
-/* Budget Slider */
-.budget-slider-container {
-  position: relative;
-  padding: 10px 0;
-}
-
-.budget-slider-container input[type="range"] {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 3px;
-  outline: none;
-}
-
-.budget-slider-container input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #68d391;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.budget-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 0.9rem;
-  color: #718096;
-}
-
-/* Ingredients Selection */
-.ingredients-grid {
+.menu-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
 }
 
-.ingredient-item {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 15px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
+.menu-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.ingredient-item:hover {
-  border-color: #68d391;
+.menu-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
 }
 
-.ingredient-item.selected {
-  border-color: #10b981;
-  background-color: #ecfdf5;
+.menu-info {
+  padding: var(--space-3);
+}
+
+.menu-name {
   font-weight: 600;
   color: var(--text-dark);
 }
 
-/* Result Box */
-.result-box {
-  margin-top: var(--space-8);
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-6);
+.menu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
 }
 
-/* Meal Planner Card */
-.meal-planner-card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  padding: 40px;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: left;
-}
-
-.meal-planner-card h2 {
-  font-size: 1.8rem;
-  text-align: center;
-  margin-bottom: 30px;
-  color: #2d3748;
-}
-
-.meal-planner-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-}
-
-/* Step Form */
-.form-step {
-  display: none;
-}
-
-.form-step.active {
-  display: block;
-}
-
-.form-field {
-  margin-bottom: var(--space-6);
-}
-
-.form-field label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #4a5568;
-}
-
-.form-field input[type="text"],
-.form-field input[type="number"],
-.form-field select {
-  width: 100%;
-  padding: var(--space-4);
-  border: 1px solid var(--gray-300);
+.recommendation-details {
+  margin-top: var(--space-4);
+  background: var(--gray-50);
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  font-size: 1rem;
-  background-color: var(--gray-50);
+  font-size: 0.9rem;
+}
+
+.detail-item strong {
+  color: var(--text-dark);
+}
+
+.footer-note {
+  margin-top: var(--space-4);
+  font-style: italic;
+  color: var(--text-medium);
+}
+
+/* === NO RESULTS / LOADING / ERROR STYLES === */
+.loading,
+.no-results-container,
+.error-message {
+  text-align: center;
+  padding: var(--space-6);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+}
+
+.no-results ul {
+  list-style: disc inside;
+  text-align: left;
+  max-width: 300px;
+  margin: var(--space-3) auto;
+  line-height: 1.5;
+}
+
+.retry-button {
+  margin-top: var(--space-3);
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background: var(--accent-light);
+}
+
+/* === UTILITIES UNTUK ANIMASI (AOS) JIKA DIPAKAI === */
+[data-aos] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition-property: opacity, transform;
+  transition-duration: var(--transition-slow);
+}
+
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
 }

@@ -17,13 +17,29 @@ const LoginPage = {
               <form class="auth-form" id="loginForm">
                 <div class="form-group">
                   <label for="email">Email Address</label>
-                  <input type="email" id="email" name="email" required placeholder="Enter your email">
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    placeholder="example@email.com"
+                    autocomplete="email"
+                    title="Enter the email address you used to register"
+                  >
                   <span class="error-message" id="emailError"></span>
                 </div>
                 
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <input type="password" id="password" name="password" required placeholder="Enter your password">
+                  <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Enter your password (min. 6 characters)"
+                    autocomplete="current-password"
+                    title="Enter your account password"
+                  >
                   <span class="error-message" id="passwordError"></span>
                 </div>
                 
@@ -42,15 +58,6 @@ const LoginPage = {
                     <i class="fas fa-spinner fa-spin"></i>
                   </span>
                 </button>
-                
-                <div class="auth-divider">
-                  <span>or</span>
-                </div>
-                
-                <button type="button" class="auth-button google-button" id="googleLogin">
-                  <i class="fab fa-google"></i>
-                  Continue with Google
-                </button>
               </form>
               
               <div class="auth-footer">
@@ -68,131 +75,121 @@ const LoginPage = {
 
   initializeEventListeners() {
     const loginForm = document.getElementById("loginForm");
-    const loginButton = document.getElementById("loginButton");
-    const googleLoginButton = document.getElementById("googleLogin");
 
     if (loginForm) {
       loginForm.addEventListener("submit", this.handleLogin.bind(this));
     }
-
-    if (googleLoginButton) {
-      googleLoginButton.addEventListener(
-        "click",
-        this.handleGoogleLogin.bind(this)
-      );
-    }
   },
 
   async handleLogin(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const loginButton = document.getElementById("loginButton");
-  const buttonText = loginButton.querySelector(".button-text");
-  const loadingSpinner = loginButton.querySelector(".loading-spinner");
+    const loginButton = document.getElementById("loginButton");
+    const buttonText = loginButton.querySelector(".button-text");
+    const loadingSpinner = loginButton.querySelector(".loading-spinner");
 
-  buttonText.style.display = "none";
-  loadingSpinner.style.display = "inline-block";
-  loginButton.disabled = true;
+    buttonText.style.display = "none";
+    loadingSpinner.style.display = "inline-block";
+    loginButton.disabled = true;
 
-  Swal.fire({
-    title: "Logging in...",
-    text: "Please wait while we log you in",
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  })
+    Swal.fire({
+      title: "Logging in...",
+      text: "Please wait while we log you in",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
-  try {
-    const formData = new FormData(event.target);
-    const loginData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      rememberMe: formData.get("rememberMe") === "on",
-    };
+    try {
+      const formData = new FormData(event.target);
+      const loginData = {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        rememberMe: formData.get("rememberMe") === "on",
+      };
 
-    this.clearErrors();
+      this.clearErrors();
 
-    // VALIDASI DULU
-    if (!this.validateForm(loginData)) {
+      // VALIDASI DULU
+      if (!this.validateForm(loginData)) {
+        Swal.close();
+        buttonText.style.display = "inline-block";
+        loadingSpinner.style.display = "none";
+        loginButton.disabled = false;
+        return;
+      }
+
+      const response = await ApiUser.post("/login", {
+        email: loginData.email,
+        password: loginData.password,
+        rememberMe: loginData.rememberMe,
+      });
+
+      const result = response.data;
+
+      localStorage.setItem("authToken", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        text: "Redirecting to your dashboard...",
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        timer: 1500,
+      }).then(() => {
+        window.location.hash = "#/dashboard";
+        window.location.reload();
+      });
+    } catch (error) {
       Swal.close();
+
+      let msg = "Network error. Please check your connection.";
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        msg = error.response.data.message;
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Login failed",
+        text: msg,
+      });
+    } finally {
       buttonText.style.display = "inline-block";
       loadingSpinner.style.display = "none";
       loginButton.disabled = false;
-      return;
     }
-
-    const response = await ApiUser.post('/login', {
-      email: loginData.email,
-      password: loginData.password,
-      rememberMe: loginData.rememberMe
-    });
-
-    const result = response.data;
-
-    localStorage.setItem("authToken", result.token);
-    localStorage.setItem("user", JSON.stringify(result.user));
-
-    Swal.fire({
-      icon: "success",
-      title: "Login Successful",
-      text: "Redirecting to your dashboard...",
-      showConfirmButton: false,
-      allowEscapeKey: false,
-      allowOutsideClick: false,
-      timer: 1500
-    }).then(() => {
-      window.location.hash = "#/dashboard";
-      window.location.reload()
-    })
-  } catch (error) {
-    Swal.close();
-
-    let msg = "Network error. Please check your connection.";
-    if (error.response && error.response.data && error.response.data.message) {
-      msg = error.response.data.message;
-    }
-
-    Swal.fire({
-      icon: "error",
-      title: "Login failed",
-      text: msg
-    });
-  } finally {
-    buttonText.style.display = "inline-block";
-    loadingSpinner.style.display = "none";
-    loginButton.disabled = false;
-  }
-},
-
-
-  handleGoogleLogin() {
-    this.showMessage("Google login will be implemented soon!", "info");
   },
 
   validateForm(data) {
-  let isValid = true;
+    let isValid = true;
 
-  if (!data.email) {
-    this.showError("emailError", "Email is required");
-    isValid = false;
-  } else if (!this.isValidEmail(data.email)) {
-    this.showError("emailError", "Please enter a valid email address");
-    isValid = false;
-  }
+    if (!data.email) {
+      this.showError("emailError", "Email is required");
+      isValid = false;
+    } else if (!this.isValidEmail(data.email)) {
+      this.showError("emailError", "Please enter a valid email address");
+      isValid = false;
+    }
 
-  // Password validation
-  if (!data.password) {
-    this.showError("passwordError", "Password is required");
-    isValid = false;
-  } else if (data.password.length < 6) {
-    this.showError("passwordError", "Password must be at least 6 characters");
-    isValid = false;
-  }
+    // Password validation
+    if (!data.password) {
+      this.showError("passwordError", "Password is required");
+      isValid = false;
+    } else if (data.password.length < 6) {
+      this.showError("passwordError", "Password must be at least 6 characters");
+      isValid = false;
+    }
 
-  return isValid;
-},
+    return isValid;
+  },
 
   isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
