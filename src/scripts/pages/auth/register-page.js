@@ -1,5 +1,6 @@
 // src/pages/auth/register-page.js
 
+import Swal from "sweetalert2";
 import ApiUser from "../../../api";
 
 const RegisterPage = {
@@ -76,7 +77,7 @@ const RegisterPage = {
                 
                 <div class="form-options">
                   <label class="checkbox-container">
-                    <input type="checkbox" id="subscribeNewsletter" name="subscribeNewsLetter>
+                    <input type="checkbox" id="subscribeNewsletter" name="subscribeNewsLetter">
                     <span class="checkmark"></span>
                     Subscribe to our newsletter for nutrition tips and updates
                   </label>
@@ -164,6 +165,16 @@ const RegisterPage = {
   loadingSpinner.style.display = "inline-block";
   registerButton.disabled = true;
 
+  Swal.fire({
+    title: 'Creating your account...',
+    text: 'Please wait while we set up your account',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  })
+
   try {
     const formData = new FormData(event.target);
     const registerData = {
@@ -181,6 +192,7 @@ const RegisterPage = {
     this.clearErrors();
 
     if (!this.validateForm(registerData)) {
+      Swal.close();
       buttonText.style.display = "inline-block";
       loadingSpinner.style.display = "none";
       registerButton.disabled = false;
@@ -216,17 +228,40 @@ console.log("Server response:", response.data);
 const result = response.data;
 
 if (response.status === 201) {
-  this.showMessage("Account created successfully! Please check your email for verification.", "success");
-  setTimeout(() => {
+  Swal.fire({
+    icon: 'success',
+    title: 'Registration Successful',
+    text: 'Your account has been created successfully! Please check your email for verification.',
+    showConfirmButton: false,
+    allowEscapeKey: false,
+    allowOutsideClick: false,
+    timer: 2000
+  }).then(() => {
     window.location.hash = "#/login";
-  }, 2000);
+    window.location.reload(); 
+  })
 } else {
-  this.showMessage(result.message || "Registration failed. Please try again.", "error");
+  Swal.close();
+  Swal.fire({
+    icon: 'error',
+    title: 'Registration Failed',
+    text: result.message || "An error occurred during registration. Please try again.",
+    showConfirmButton: true,
+    allowEscapeKey: false,
+    allowOutsideClick: false
+  });
 }
-
   } catch (error) {
+    Swal.close();
     console.error("Registration error:", error);
-    this.showMessage("Network error. Please check your connection.", "error");
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: error.response?.data?.message || "An unexpected error occurred. Please try again.",
+      showConfirmButton: true,
+      allowEscapeKey: false,
+      allowOutsideClick: false
+    });
   } finally {
     buttonText.style.display = "inline-block";
     loadingSpinner.style.display = "none";
@@ -235,14 +270,12 @@ if (response.status === 201) {
 },
 
   handleGoogleRegister() {
-    // Implement Google OAuth registration
     this.showMessage("Google registration will be implemented soon!", "info");
   },
 
   validateForm(data) {
     let isValid = true;
 
-    // First name validation
     if (!data.firstName || data.firstName.trim().length < 2) {
       this.showError(
         "firstNameError",
