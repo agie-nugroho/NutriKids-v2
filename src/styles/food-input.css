@@ -1,0 +1,192 @@
+/* src/styles/components/food-input.css */
+
+/* Food Input Form Styles */
+.input-form-section {
+  padding: var(--space-24) var(--space-6);
+  background: linear-gradient(
+    135deg,
+    var(--background-light),
+    var(--background-alt)
+  );
+}
+
+.input-form {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.input-form label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.input-form input,
+.input-form select {
+  width: 100%;
+  padding: var(--space-4);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all var(--transition-fast) var(--easing);
+}
+
+.input-form input:focus,
+.input-form select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.input-form button {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: var(--white);
+  padding: var(--space-4) var(--space-8);
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition) var(--easing);
+  display: block;
+  width: 100%;
+  margin-top: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.input-form button:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+/* Budget Slider */
+.budget-slider-container {
+  position: relative;
+  padding: 10px 0;
+}
+
+.budget-slider-container input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  outline: none;
+}
+
+.budget-slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #68d391;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.budget-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+/* Ingredients Selection */
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ingredient-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ingredient-item:hover {
+  border-color: #68d391;
+}
+
+.ingredient-item.selected {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Result Box */
+.result-box {
+  margin-top: var(--space-8);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6);
+}
+
+/* Meal Planner Card */
+.meal-planner-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.meal-planner-card h2 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2d3748;
+}
+
+.meal-planner-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+/* Step Form */
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+}
+
+.form-field {
+  margin-bottom: var(--space-6);
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #4a5568;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field select {
+  width: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background-color: var(--gray-50);
+}
