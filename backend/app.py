@@ -1,137 +1,117 @@
-# backend/app.py
-
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+import tensorflow as tf
+import joblib
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from typing import Optional
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
 
-# Load dataset
-df_menus = pd.read_excel('CAPSTONE/backend/data/menu_makanan.xlsx')
+# --- CORS Middleware (biar bisa diakses dari browser/localhost frontend) ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Ganti ke domain frontend saat produksi
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Mapping usia ke age_group
-def map_age_to_group(age_str):
-    try:
-        age = int(age_str)
-        if age <= 6:
-            return 'Bayi (0-6 bulan)'
-        elif age <= 12:
-            return 'Balita (6-12 bulan)'
-        elif age <= 24:
-            return 'Anak Kecil (1-2 tahun)'
-        elif age <= 60:
-            return 'Anak Prasekolah (3-5 tahun)'
-        elif age <= 96:
-            return 'Anak Sekolah (6-8 tahun)'
-        else:
-            return 'Praremaja (9-12 tahun)'
-    except:
-        return 'Anak Kecil (1-2 tahun)'
+# --- Load model klasifikasi dan preprocessing ---
+model = tf.keras.models.load_model("model/model_klasifikasi.h5")
+scaler = joblib.load("model/scaler.pkl")
+label_encoder = joblib.load("model/label_encoder.pkl")
+
+# --- Load dataset untuk rekomendasi ---
+menu_df = pd.read_csv("https://raw.githubusercontent.com/dfin12/capstone_project/refs/heads/main/menu_makanan.csv")
+
+nutrition_cols = [
+    "protein", "karbohidrat", "serat", "kalsium", "fosfor", "zat_besi",
+    "natrium", "kalium", "tembaga", "seng", "vit_c"
+]
+
+# --- TF-IDF preparation untuk bahan_makanan ---
+tfidf = TfidfVectorizer()
+tfidf_matrix = tfidf.fit_transform(menu_df["bahan_makanan"].fillna(""))
+
+# --- Schema input gizi dari user ---
+class NutritionInput(BaseModel):
+    protein: float
+    karbohidrat: float
+    serat: float
+    kalsium: float
+    fosfor: float
+    zat_besi: float
+    natrium: float
+    kalium: float
+    tembaga: float
+    seng: float
+    vit_c: float
+
+# --- Endpoint: Prediksi kategori gizi ---
+@app.post("/predict-kategori")
+def predict_kategori(data: NutritionInput):
+    user_input = [[getattr(data, col) for col in nutrition_cols]]
+    scaled_input = scaler.transform(user_input)
+    pred_probs = model.predict(scaled_input)
+    pred_class = int(tf.argmax(pred_probs[0]))
+    kategori = label_encoder.inverse_transform([pred_class])[0]
+    return {
+        "kategori_gizi": kategori,
+        "confidence": float(pred_probs[0][pred_class])
+    }
+
+# --- Endpoint: Rekomendasi Menu Berdasarkan Bahan dan Budget ---
+@app.get("/recommend")
+def recommend(bahan: str = Query(...), budget: int = Query(...)):
+    user_vec = tfidf.transform([bahan])
+    cos_sim = cosine_similarity(user_vec, tfidf_matrix).flatten()
+
+    temp_df = menu_df.copy()
+    temp_df["similarity"] = cos_sim
+
+    filtered = temp_df[temp_df["price (100 gr)"] <= budget]
+    top5 = filtered.sort_values(by="similarity", ascending=False).head(5)
+
+    return top5[
+        ["menu_makanan", "bahan_makanan", "price (100 gr)", "similarity"]
+    ].to_dict(orient="records")
 
 
-# Jika kolom 'age_group' belum ada, tambahkan secara dinamis
-if 'age_group' not in df_menus.columns:
-    def assign_age_group(menu_name):
-        # Contoh logika sederhana berdasarkan nama menu
-        menu_lower = menu_name.lower()
-        if any(kata in menu_lower for kata in ['puree', 'bubur']):
-            return 'Bayi (0-6 bulan)'
-        elif any(kata in menu_lower for kata in ['telur', 'lontong', 'gado-gado']):
-            return 'Balita (6-12 bulan)'
-        elif any(kata in menu_lower for kata in ['nasi', 'mi', 'roti']):
-            return 'Anak Kecil (1-2 tahun)'
-        elif any(kata in menu_lower for kata in ['ayam', 'ikan', 'daging']):
-            return 'Anak Prasekolah (3-5 tahun)'
-        else:
-            return 'Anak Sekolah (6-8 tahun)'
+class UserInput(BaseModel):
+    user_ingredients: str
+    user_rasa: Optional[str] = None
+    user_meal_time: Optional[str] = None
+    user_budget: int
+    usia: int
+    jenis_kelamin: str
     
-    df_menus['age_group'] = df_menus['menu_makanan'].apply(assign_age_group)
 
+@app.post("/recommend-full")
+def recommend_full(input_data: UserInput):
+    # Contoh: filter menu berdasarkan budget dan similarity bahan makanan
+    user_vec = tfidf.transform([input_data.user_ingredients])
+    cos_sim = cosine_similarity(user_vec, tfidf_matrix).flatten()
 
-# Content-Based Filtering
-def recommend_menu(user_input, df):
-    # Filter berdasarkan usia dan rasa
-    filtered_df = df[df['rasa'] == user_input['taste']]
-    if filtered_df.empty:
-        filtered_df = df
+    temp_df = menu_df.copy()
+    temp_df["similarity"] = cos_sim
 
-    # Filter berdasarkan usia (jika cocok)
-    filtered_df = filtered_df[filtered_df['age_group'] == user_input['age_group']]
-    if filtered_df.empty:
-        filtered_df = df[df['rasa'] == user_input['taste']] or df
+    # Filter by budget
+    filtered = temp_df[temp_df["price (100 gr)"] <= input_data.user_budget]
 
-    # Vektorisasi bahan makanan
-    vectorizer = CountVectorizer()
-    # Perbaikan: Menggunakan nama kolom yang benar 'bahan_makanan' bukan 'bahan_maka'
-    feature_matrix = vectorizer.fit_transform(filtered_df['bahan_makanan'])
+    # Contoh filter tambahan berdasarkan rasa dan waktu makan (asumsi ada kolom 'rasa', 'meal_time' di menu_df)
+    if input_data.user_rasa:
+        filtered = filtered[filtered["rasa"].str.contains(input_data.user_rasa, case=False, na=False)]
+    if input_data.user_meal_time:
+        filtered = filtered[filtered["meal_time"].str.contains(input_data.user_meal_time, case=False, na=False)]
 
-    # Hitung similarity matrix
-    similarity_matrix = cosine_similarity(feature_matrix)
+    # Pilih top 5 berdasarkan similarity
+    top5 = filtered.sort_values(by="similarity", ascending=False).head(5)
 
-    # Ambil top 3 rekomendasi
-    input_index = 0
-    similar_scores = list(enumerate(similarity_matrix[input_index]))
-    sorted_similar_scores = sorted(similar_scores, key=lambda x: x[1], reverse=True)[1:]
+    # Kamu bisa juga tambahkan logic berdasarkan usia dan jenis kelamin jika relevan
 
-    top_recommendations = []
-    for i in sorted_similar_scores[:3]:
-        index = i[0]
-        recommendation = {
-            "menu_name": filtered_df.iloc[index]['menu_makanan'],
-            "ingredients": filtered_df.iloc[index]['bahan_makanan'],
-            "image": f"https://source.unsplash.com/random/300x200/? {filtered_df.iloc[index]['menu_makanan']}",
-            "price": filtered_df.iloc[index]['price (100 gr)'],
-            "energy": filtered_df.iloc[index]['energi (kal)'],
-            "protein": filtered_df.iloc[index]['protein (g)'],
-            "carbs": filtered_df.iloc[index]['karbohidrat (g)'],
-            "fat": filtered_df.iloc[index]['lemak_total (g)'],
-            "class": filtered_df.iloc[index]['class']
-        }
-        top_recommendations.append(recommendation)
-
-    return top_recommendations
-
-
-@app.route('/')
-def home():
-    return "NutriKidz API is running!"
-
-
-@app.route('/api/recommend', methods=['POST'])
-def recommend_api():
-    data = request.get_json()
-
-    name = data.get('name', '')
-    age = data.get('age', '')
-    gender = data.get('gender', '')
-    ingredients = data.get('ingredients', '')
-    taste = data.get('taste', '')
-    budget = data.get('budget', '')
-    meal_time = data.get('meal-time', '')
-
-    age_group = map_age_to_group(age)
-
-    # Validasi input user
-    if 'taste' not in data or not data['taste']:
-        return jsonify({"error": "Preferensi rasa tidak boleh kosong"}), 400
-    
-    # Periksa apakah rasa tersedia dalam dataset
-    if data['taste'] not in df_menus['rasa'].unique():
-        return jsonify({"error": f"Rasa '{data['taste']}' tidak tersedia dalam dataset"}), 400
-
-    try:
-        result = recommend_menu({
-            'age_group': age_group,
-            'taste': taste
-        }, df_menus)
-        
-        return jsonify({"recommendations": result}), 200
-    except Exception as e:
-        return jsonify({"error": f"Terjadi kesalahan: {str(e)}"}), 500
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return top5[
+        ["menu_makanan", "bahan_makanan", "price (100 gr)", "similarity"]
+    ].to_dict(orient="records")
