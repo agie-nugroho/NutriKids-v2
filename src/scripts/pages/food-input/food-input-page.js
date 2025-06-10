@@ -1,5 +1,7 @@
 // src/pages/food-input/food-input-page.js
 
+import ApiUser from "../../../api";
+
 const FoodInputPage = {
   async render() {
     return `
@@ -1039,43 +1041,39 @@ const FoodInputPage = {
         }
 
         // Prepare API payload
-        const payload = {
-          name: formData.name,
-          gender: formData.gender,
-          age: formData.age,
-          "meal-time": mealTimeIndonesian,
-          budget: formData.budget,
-          taste: formData.taste,
-          ingredients: formData.ingredients.map((ing) => ing.name).join(", "),
-        };
+        //   const payload = {
+        //   user_ingredients: formData.ingredients.map((ing) => ing.name).join(" "),
+        //   user_rasa: formData.taste,
+        //   user_meal_time: formData.mealTime,
+        //   user_budget: parseInt(formData.budget),
+        //   usia: parseInt(formData.age),
+        //   jenis_kelamin: formData.gender,
+        // };
+
 
         try {
-          const response = await fetch("http://127.0.0.1:5000/api/recommend", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+          const response = await ApiUser.post("/recommend-full", {
+              user_ingredients: formData.ingredients.map((ing) => ing.name).join(", "),
+              user_rasa: formData.taste,
+              user_meal_time: formData.mealTime,
+              user_budget: parseInt(formData.budget),
+              usia: parseInt(formData.age),
+              jenis_kelamin: formData.gender,
           });
 
-          const result = await response.json();
+          const result = response.data;
 
-          if (
-            response.ok &&
-            result.recommendations &&
-            result.recommendations.length > 0
-          ) {
-            // Display recommendations
-            const menus = result.recommendations
-              .map(
-                (menu) => `
-                <div class="menu-card" data-aos="fade-up">
-                  <img src="${menu.image}" alt="${menu.name}" />
-                  <div class="menu-info">
-                    <p class="menu-name">${menu.name}</p>
-                  </div>
-                </div>
-              `
-              )
-              .join("");
+         if (Array.isArray(result) && result.length > 0) {
+          const menus = result.map(menu => `
+            <div class="menu-card">
+              <div class="menu-info">
+                <p class="menu-name">${menu.menu_makanan}</p>
+                <p class="menu-detail">Bahan: ${menu.bahan_makanan}</p>
+                <p class="menu-detail">Harga: Rp ${menu["price (100 gr)"].toLocaleString("id-ID")}</p>
+                <p class="menu-detail">Skor Kemiripan: ${menu.similarity.toFixed(2)}</p>
+              </div>
+            </div>
+          `).join("");
 
             const mealTimeDisplay = {
               breakfast: "Sarapan (6:00 - 9:00)",
