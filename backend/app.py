@@ -29,7 +29,8 @@ menu_df = pd.read_csv("https://raw.githubusercontent.com/dfin12/capstone_project
 
 nutrition_cols = [
     "protein", "karbohidrat", "serat", "kalsium", "fosfor", "zat_besi",
-    "natrium", "kalium", "tembaga", "seng", "vit_c"
+    "natrium", "kalium", "tembaga", "seng", "vit_c", "air (ml)",
+    "energi (kal)", "lemak_total"
 ]
 
 # --- TF-IDF preparation untuk bahan_makanan ---
@@ -49,6 +50,9 @@ class NutritionInput(BaseModel):
     tembaga: float
     seng: float
     vit_c: float
+    air: float
+    energi: float
+    lemak_total: float
 
 # --- Endpoint: Prediksi kategori gizi ---
 @app.post("/predict-kategori")
@@ -91,27 +95,23 @@ class UserInput(BaseModel):
 
 @app.post("/recommend-full")
 def recommend_full(input_data: UserInput):
-    # Contoh: filter menu berdasarkan budget dan similarity bahan makanan
     user_vec = tfidf.transform([input_data.user_ingredients])
     cos_sim = cosine_similarity(user_vec, tfidf_matrix).flatten()
 
     temp_df = menu_df.copy()
     temp_df["similarity"] = cos_sim
 
-    # Filter by budget
     filtered = temp_df[temp_df["price (100 gr)"] <= input_data.user_budget]
 
-    # Contoh filter tambahan berdasarkan rasa dan waktu makan (asumsi ada kolom 'rasa', 'meal_time' di menu_df)
     if input_data.user_rasa:
         filtered = filtered[filtered["rasa"].str.contains(input_data.user_rasa, case=False, na=False)]
     if input_data.user_meal_time:
         filtered = filtered[filtered["meal_time"].str.contains(input_data.user_meal_time, case=False, na=False)]
 
-    # Pilih top 5 berdasarkan similarity
     top5 = filtered.sort_values(by="similarity", ascending=False).head(5)
 
-    # Kamu bisa juga tambahkan logic berdasarkan usia dan jenis kelamin jika relevan
-
     return top5[
-        ["menu_makanan", "bahan_makanan", "price (100 gr)", "similarity"]
+            ["menu_makanan", "bahan_makanan", "price (100 gr)", "meal_time", "rasa", "protein", "karbohidrat", "serat",
+     "kalsium", "fosfor", "zat_besi", "natrium", "kalium", "tembaga", "seng", "vit_c", "air (ml)",
+     "energi (kal)", "lemak_total", "similarity"]
     ].to_dict(orient="records")

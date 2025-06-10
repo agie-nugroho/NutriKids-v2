@@ -1040,16 +1040,6 @@ const FoodInputPage = {
             mealTimeIndonesian = formData.mealTime;
         }
 
-        // Prepare API payload
-        //   const payload = {
-        //   user_ingredients: formData.ingredients.map((ing) => ing.name).join(" "),
-        //   user_rasa: formData.taste,
-        //   user_meal_time: formData.mealTime,
-        //   user_budget: parseInt(formData.budget),
-        //   usia: parseInt(formData.age),
-        //   jenis_kelamin: formData.gender,
-        // };
-
         try {
           const response = await ApiMl.post("/recommend-full", {
             user_ingredients: formData.ingredients
@@ -1081,6 +1071,21 @@ const FoodInputPage = {
                 <p class="menu-detail">Skor Kemiripan: ${menu.similarity.toFixed(
                   2
                 )}</p>
+                <div class="nutrisi-details">
+                  <p><strong>Protein:</strong> ${menu.protein} mg</p>
+                  <p><strong>Karbohidrat:</strong> ${menu.karbohidrat} mg</p>
+                  <p><strong>Serat:</strong> ${menu.serat} mg</p>
+                  <p><strong>Kalsium:</strong> ${menu.kalsium} mg</p>
+                  <p><strong>Fosfor:</strong> ${menu.fosfor} mg</p>
+                  <p><strong>Zat Besi:</strong> ${menu.zat_besi} mg</p>
+                  <p><strong>Natrium:</strong> ${menu.natrium} mg</p>
+                  <p><strong>Kalium:</strong> ${menu.kalium} mg</p>
+                  <p><strong>Tembaga:</strong> ${menu.tembaga} mg</p>
+                  <p><strong>Seng:</strong> ${menu.seng} mg</p>
+                  <p><strong>Vitamin C:</strong> ${menu.vit_c} mg</p>
+                  <p><strong>Energi:</strong> ${menu["energi (kal)"]} kal</p>
+                  <p><strong>Lemak Total:</strong> ${menu.lemak_total} mg</p>
+                </div>
               </div>
             </div>
           `
