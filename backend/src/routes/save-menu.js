@@ -81,5 +81,49 @@ module.exports = [
             }).code(500);
         }
         },
+    },
+
+    {
+  method: 'DELETE',
+  path: '/save-menu/{savedMenuId}',
+  handler: async (request, h) => {
+    const { savedMenuId } = request.params;
+
+    try {
+      // Prisma otomatis me-throw P2025 kalau data tidak ditemukan
+      const deletedMenu = await prisma.savedMenu.delete({
+         where: { id: savedMenuId },  
+      });
+
+      return h
+        .response({
+          status: 'success',
+          message: 'Menu berhasil dihapus.',
+          data: deletedMenu, // info menu yang dihapus (opsional)
+        })
+        .code(200);
+
+    } catch (error) {
+      // Jika record tidak ditemukan
+      if (error.code === 'P2025') {
+        return h
+          .response({
+            status: 'fail',
+            message: 'Menu tidak ditemukan.',
+          })
+          .code(404);
+      }
+
+      // Error tak terduga
+      console.error(error);
+      return h
+        .response({
+          status: 'error',
+          message: 'Gagal menghapus menu.',
+        })
+        .code(500);
     }
+  },
+},
+
 ]
