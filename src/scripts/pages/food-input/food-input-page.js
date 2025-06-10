@@ -1050,30 +1050,42 @@ const FoodInputPage = {
         //   jenis_kelamin: formData.gender,
         // };
 
-
         try {
           const response = await ApiMl.post("/recommend-full", {
-              user_ingredients: formData.ingredients.map((ing) => ing.name).join(", "),
-              user_rasa: formData.taste,
-              user_meal_time: formData.mealTime,
-              user_budget: parseInt(formData.budget),
-              usia: parseInt(formData.age),
-              jenis_kelamin: formData.gender,
+            user_ingredients: formData.ingredients
+              .map((ing) => ing.name)
+              .join(", "),
+            user_rasa: formData.taste,
+            user_meal_time: formData.mealTime,
+            user_budget: parseInt(formData.budget),
+            usia: parseInt(formData.age),
+            jenis_kelamin: formData.gender,
           });
 
           const result = response.data;
 
-         if (Array.isArray(result) && result.length > 0) {
-          const menus = result.map(menu => `
+          if (Array.isArray(result) && result.length > 0) {
+            const menus = result
+              .map(
+                (menu) => `
             <div class="menu-card">
+              <input type="checkbox" class="select-menu" data-menu='${JSON.stringify(
+                menu
+              )}'>
               <div class="menu-info">
                 <p class="menu-name">${menu.menu_makanan}</p>
                 <p class="menu-detail">Bahan: ${menu.bahan_makanan}</p>
-                <p class="menu-detail">Harga: Rp ${menu["price (100 gr)"].toLocaleString("id-ID")}</p>
-                <p class="menu-detail">Skor Kemiripan: ${menu.similarity.toFixed(2)}</p>
+                <p class="menu-detail">Harga: Rp ${menu[
+                  "price (100 gr)"
+                ].toLocaleString("id-ID")}</p>
+                <p class="menu-detail">Skor Kemiripan: ${menu.similarity.toFixed(
+                  2
+                )}</p>
               </div>
             </div>
-          `).join("");
+          `
+              )
+              .join("");
 
             const mealTimeDisplay = {
               breakfast: "Sarapan (6:00 - 9:00)",
@@ -1082,38 +1094,39 @@ const FoodInputPage = {
             };
 
             resultContainer.innerHTML = `
-              <div class="recommendation-header">
-                <h3>🍽️ Rekomendasi Makanan untuk ${formData.name}</h3>
-                <div class="recommendation-details">
-                  <div class="detail-item">
-                    <strong>Waktu Makan:</strong> ${
-                      mealTimeDisplay[formData.mealTime]
-                    }
-                  </div>
-                  <div class="detail-item">
-                    <strong>Budget:</strong> Rp ${parseInt(
-                      formData.budget
-                    ).toLocaleString("id-ID")}
-                  </div>
-                  <div class="detail-item">
-                    <strong>Preferensi Rasa:</strong> ${formData.taste}
-                  </div>
-                  <div class="detail-item">
-                    <strong>Bahan Terpilih:</strong> ${formData.ingredients
-                      .map((ing) => ing.name)
-                      .join(", ")}
-                  </div>
+            <div class="recommendation-header">
+              <h3>🍽️ Rekomendasi Makanan untuk ${formData.name}</h3>
+              <div class="recommendation-details">
+                <div class="detail-item">
+                  <strong>Waktu Makan:</strong> ${
+                    mealTimeDisplay[formData.mealTime]
+                  }
+                </div>
+                <div class="detail-item">
+                  <strong>Budget:</strong> Rp ${parseInt(
+                    formData.budget
+                  ).toLocaleString("id-ID")}
+                </div>
+                <div class="detail-item">
+                  <strong>Preferensi Rasa:</strong> ${formData.taste}
+                </div>
+                <div class="detail-item">
+                  <strong>Bahan Terpilih:</strong> ${formData.ingredients
+                    .map((ing) => ing.name)
+                    .join(", ")}
                 </div>
               </div>
-              <div class="menu-grid">
-                ${menus}
-              </div>
-              <div class="recommendation-footer">
-                <p class="footer-note">💡 Rekomendasi ini disesuaikan dengan usia ${
-                  formData.age
-                } tahun dan preferensi yang dipilih</p>
-              </div>
-            `;
+            </div>
+            <div class="menu-grid">
+              ${menus}
+            </div>
+            <div class="button-container">
+              <button id="save-selected-menus" class="primary-button">Simpan Rekomendasi</button>
+            </div>
+            <div class="recommendation-footer">
+              <p class="footer-note">💡 Pilih salah satu atau lebih rekomendasi makanan di atas</p>
+            </div>
+          `;
           } else {
             resultContainer.innerHTML = `
               <div class="no-results-container">
@@ -1148,6 +1161,37 @@ const FoodInputPage = {
 
     // Initialize with empty ingredients display
     updateIngredientsDisplay();
+
+    let selectedMenus = [];
+
+    // event listener untuk checkbox rekomendasi
+    resultContainer.querySelectorAll(".select-menu").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const menu = JSON.parse(checkbox.dataset.menu);
+        if (checkbox.checked) {
+          selectedMenus.push(menu);
+        } else {
+          selectedMenus = selectedMenus.filter(
+            (m) => m.menu_makanan !== menu.menu_makanan
+          );
+        }
+      });
+    });
+
+    // tombol simpan rekomendasi
+    const saveButton = document.getElementById("save-selected-menus");
+    if (saveButton) {
+      saveButton.addEventListener("click", () => {
+        if (selectedMenus.length === 0) {
+          alert("Silahkan pilih minimal satu menu makanan");
+          return;
+        }
+
+        // simpan ke localStorage
+        localStorage.setItem("selectedMenus", JSON.stringify(selectedMenus));
+        alert(`${selectedMenus.length} menu berhasil disimpan`);
+      });
+    }
   },
 };
 
