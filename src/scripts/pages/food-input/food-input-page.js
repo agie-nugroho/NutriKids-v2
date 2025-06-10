@@ -1,6 +1,6 @@
 // src/pages/food-input/food-input-page.js
 
-import ApiUser from "../../../api";
+import { ApiMl } from "../../../api";
 
 const FoodInputPage = {
   async render() {
@@ -1052,7 +1052,7 @@ const FoodInputPage = {
 
 
         try {
-          const response = await ApiUser.post("/recommend-full", {
+          const response = await ApiMl.post("/recommend-full", {
               user_ingredients: formData.ingredients.map((ing) => ing.name).join(", "),
               user_rasa: formData.taste,
               user_meal_time: formData.mealTime,

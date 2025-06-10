@@ -1,7 +1,11 @@
 import axios from "axios";
 
-const ApiUser = axios.create({
-    baseURL: 'http://localhost:8000'
-})
+export const ApiBackend = axios.create({
+  baseURL: 'http://localhost:3000'
+});
 
-export default ApiUser;
+export const ApiMl = axios.create({
+  baseURL: 'http://localhost:8000'
+});
+
+export default { ApiBackend, ApiMl };

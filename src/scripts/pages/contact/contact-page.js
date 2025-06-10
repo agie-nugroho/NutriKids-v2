@@ -1,5 +1,5 @@
 // src/pages/contact/contact-page.js
-import ApiUser from '../../../api/index.js';
+import { ApiBackend } from '../../../api/index.js';
 
 const ContactPage = {
   async render() {
@@ -35,7 +35,7 @@ const ContactPage = {
         const pesan = formData.get("message");
 
         try {
-          const response = await ApiUser.post('/comments', {
+          const response = await ApiBackend.post('/comments', {
             nama,
             email_comment,
             pesan
