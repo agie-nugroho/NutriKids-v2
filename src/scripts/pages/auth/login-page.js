@@ -1,7 +1,7 @@
 // src/pages/auth/login-page.js
 
 import Swal from "sweetalert2";
-import ApiUser from "../../../api";
+import { ApiBackend } from "../../../api";
 
 const LoginPage = {
   async render() {
@@ -121,7 +121,7 @@ const LoginPage = {
         return;
       }
 
-      const response = await ApiUser.post("/login", {
+      const response = await ApiBackend.post("/login", {
         email: loginData.email,
         password: loginData.password,
         rememberMe: loginData.rememberMe,

@@ -1,7 +1,7 @@
 // src/pages/auth/register-page.js
 
 import Swal from "sweetalert2";
-import ApiUser from "../../../api";
+import { ApiBackend } from "../../../api";
 
 const RegisterPage = {
   async render() {
@@ -244,7 +244,7 @@ const RegisterPage = {
         return;
       }
 
-      const response = await ApiUser.post("/register", {
+      const response = await ApiBackend.post("/register", {
         firstName: registerData.firstName,
         lastName: registerData.lastName,
         email: registerData.email,
