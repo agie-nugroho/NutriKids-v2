@@ -49,8 +49,8 @@ const foodDetail = {
             <p><strong>Tembaga:</strong> ${menu.tembaga} mg</p>
             <p><strong>Seng:</strong> ${menu.seng} mg</p>
             <p><strong>Vitamin C:</strong> ${menu.vit_c} mg</p>
-            <p><strong>Air:</strong> ${menu["air (ml)"]} mg</p>
-            <p><strong>Energi:</strong> ${menu["energi (kal)"]} kal</p>
+            <p><strong>Air:</strong> ${menu.air} mg</p>
+            <p><strong>Energi:</strong> ${menu.energi} kal</p>
             <p><strong>Lemak Total:</strong> ${menu.lemak_total} mg</p>
           </div>
           <button class="delete-btn" data-id="${menu.id}">Hapus</button>
