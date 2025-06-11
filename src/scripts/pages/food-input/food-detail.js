@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { ApiBackend } from "../../../api";
 
 const foodDetail = {
@@ -251,50 +252,58 @@ const foodDetail = {
     }
   },
 
-  async deleteMenu(menuId, buttonElement) {
-    const confirmDelete = confirm(
-      "🗑️ Yakin ingin menghapus menu ini dari koleksi Anda?"
-    );
-    if (!confirmDelete) return;
+ async deleteMenu(menuId, buttonElement) {
+  const confirmResult = await Swal.fire({
+    title: 'Yakin ingin menghapus?',
+    text: '🗑️ Menu ini akan dihapus dari koleksi Anda.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#e74c3c',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  });
 
-    const menuCard = buttonElement.closest(".menu-card");
-    const originalText = buttonElement.innerHTML;
+  if (!confirmResult.isConfirmed) return;
 
-    // Show loading state
-    buttonElement.innerHTML = `
-      <div class="loading-spinner small"></div>
-      <span>Menghapus...</span>
-    `;
-    buttonElement.disabled = true;
+  const menuCard = buttonElement.closest(".menu-card");
+  const originalText = buttonElement.innerHTML;
 
-    try {
-      const response = await ApiBackend.delete(`/save-menu/${menuId}`);
+  // Tampilkan loading state di tombol
+  buttonElement.innerHTML = `
+    <div class="loading-spinner small"></div>
+    <span>Menghapus...</span>
+  `;
+  buttonElement.disabled = true;
 
-      if (response.status === 200) {
-        // Success animation
-        menuCard.classList.add("removing");
+  try {
+    const response = await ApiBackend.delete(`/save-menu/${menuId}`);
 
-        setTimeout(() => {
-          menuCard.remove();
-          this.updateStats();
-          this.showNotification("✅ Menu berhasil dihapus!", "success");
-        }, 500);
-      } else {
-        throw new Error(`HTTP ${response.status}`);
-      }
-    } catch (error) {
-      console.error("❌ Delete error:", error);
+    if (response.status === 200) {
+      // Efek visual sebelum menghapus elemen
+      menuCard.classList.add("removing");
 
-      // Restore button state
-      buttonElement.innerHTML = originalText;
-      buttonElement.disabled = false;
-
-      this.showNotification(
-        "❌ Gagal menghapus menu. Silakan coba lagi.",
-        "error"
-      );
+      setTimeout(() => {
+        menuCard.remove();
+        this.updateStats();
+        this.showNotification("✅ Menu berhasil dihapus!", "success");
+      }, 500);
+    } else {
+      throw new Error(`HTTP ${response.status}`);
     }
-  },
+  } catch (error) {
+    console.error("❌ Delete error:", error);
+
+    // Kembalikan tampilan tombol
+    buttonElement.innerHTML = originalText;
+    buttonElement.disabled = false;
+
+    this.showNotification(
+      "❌ Gagal menghapus menu. Silakan coba lagi.",
+      "error"
+    );
+  }
+},
 
   updateStats() {
     const remainingCards = document.querySelectorAll(

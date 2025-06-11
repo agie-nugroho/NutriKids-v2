@@ -1,4 +1,5 @@
 // src/pages/home/home-page.js
+import Swal from "sweetalert2";
 import anakImage from "../../../public/images/anak.png";
 
 const HomePage = {
@@ -8,7 +9,7 @@ const HomePage = {
         <div class="hero-content">
           <h1>Healthy Meals Tailored for Your Child</h1>
           <p>NutriKids uses artificial intelligence to create personalized meal plans for children from 0 months to 12 years, ensuring optimal nutrition based on their age, preferences, and your budget.</p>
-          <a href="#/food-input" class="cta-button">Get Started</a>
+          <button class="cta-button" id="get-started-btn">Get Started</button>
           <a href="#/features" class="cta-button secondary">Learn More</a>
         </div>
         <div class="hero-image">
@@ -39,7 +40,25 @@ const HomePage = {
     `;
   },
   afterRender() {
-    // Tidak perlu logika JS tambahan di sini
+    const getStartBtn = document.getElementById("get-started-btn");
+    getStartBtn.addEventListener("click", () => {
+      const token = localStorage.getItem("authToken")
+
+      if (token) {
+        window.location.href = "#/food-input";
+      }else {
+        Swal.fire({
+          icon: 'info',
+          title: 'Login Required',
+          text: 'Please login to access the food input page.',
+          confirmButtonText: 'OK',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        }).then(() => {
+          window.location.href = "#/login";
+        });
+      }
+    })
   },
 };
 
