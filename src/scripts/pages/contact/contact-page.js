@@ -1,4 +1,5 @@
 // src/pages/contact/contact-page.js
+import Swal from 'sweetalert2';
 import { ApiBackend } from '../../../api/index.js';
 
 const ContactPage = {
@@ -34,19 +35,38 @@ const ContactPage = {
         const email_comment = formData.get("email");
         const pesan = formData.get("message");
 
+        Swal.fire({
+          title: 'Mengirim Pesan...',
+          text: 'Mohon tunggu sebentar.',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
         try {
           const response = await ApiBackend.post('/comments', {
             nama,
             email_comment,
             pesan
           });
-
-          console.log("Komentar Berhail Di kirim", response.data);
+          Swal.fire({
+            icon: 'success',
+            title: 'Komentar Berhasil Dikirim',
+            text: 'Terima kasih atas pesan Anda!',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+          });
           form.reset();
-          alert("Pesan Di kirim")
         } catch (error) {
           console.error("Gagal mengirim komentar:", error.message);
-          alert("Terjadi kesalahan saat mengirim komentar.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Mengirim Pesan',
+            text: 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.',
+            allowEscapeKey: false,
+            allowOutsideClick: false
+          });
         }
       });
     }
