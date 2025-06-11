@@ -99,3 +99,8 @@
   );
   color: var(--text-dark);
 }
+
+.features-section p {
+  text-align: center;
+  margin: 0 auto;
+}

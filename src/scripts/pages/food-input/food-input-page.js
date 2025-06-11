@@ -8,7 +8,7 @@ const FoodInputPage = {
       <section class="meal-planner-section">
         <div class="container">
           <h1>Dapatkan Rekomendasi Khusus</h1>
-          <div class="subtitle">Isi formulir untuk menerima saran makanan yang disesuaikan untuk anak Anda</div>
+
           
           <div class="meal-planner-card">
             <h2>NutriKidz - Perencana Makanan</h2>
@@ -1133,7 +1133,7 @@ const FoodInputPage = {
               <p class="footer-note"> Pilih salah satu atau lebih rekomendasi makanan di atas</p>
             </div>
           `;
-           initSaveButton();
+            initSaveButton();
           } else {
             resultContainer.innerHTML = `
               <div class="no-results-container">
@@ -1169,108 +1169,110 @@ const FoodInputPage = {
     // Initialize with empty ingredients display
     updateIngredientsDisplay();
 
-// Global scope (di luar fungsi) → agar tidak di-reset
-let selectedMenus = [];
+    // Global scope (di luar fungsi) → agar tidak di-reset
+    let selectedMenus = [];
 
-// ✅ Pasang event delegation 1x saja
-document.body.addEventListener("change", (e) => {
-  if (e.target.classList.contains("select-menu")) {
-    const menu = JSON.parse(e.target.dataset.menu);
+    // ✅ Pasang event delegation 1x saja
+    document.body.addEventListener("change", (e) => {
+      if (e.target.classList.contains("select-menu")) {
+        const menu = JSON.parse(e.target.dataset.menu);
 
-    if (e.target.checked) {
-      // Hindari duplikat
-      if (!selectedMenus.some((m) => m.menu_makanan === menu.menu_makanan)) {
-        selectedMenus.push(menu);
+        if (e.target.checked) {
+          // Hindari duplikat
+          if (
+            !selectedMenus.some((m) => m.menu_makanan === menu.menu_makanan)
+          ) {
+            selectedMenus.push(menu);
+          }
+        } else {
+          selectedMenus = selectedMenus.filter(
+            (m) => m.menu_makanan !== menu.menu_makanan
+          );
+        }
+
+        console.log("📌 Selected menus updated:", selectedMenus);
       }
-    } else {
-      selectedMenus = selectedMenus.filter(
-        (m) => m.menu_makanan !== menu.menu_makanan
-      );
-    }
+    });
 
-    console.log("📌 Selected menus updated:", selectedMenus);
-  }
-});
-
-function getUserIdFromStorage() {
-  try {
-    const raw = localStorage.getItem("user");
-    if (!raw) return null;
-    const u = JSON.parse(raw);
-    return u.id_user || u.id || u.userId || null;   // sesuaikan jika perlu
-  } catch (_) {
-    return null;
-  }
-}
-
-
-function initSaveButton() {
-  const saveButton = document.getElementById("save-selected-menus");
-
-  if (!saveButton) {
-    console.error("❌ Tombol #save-selected-menus tidak ditemukan di DOM.");
-    return;
-  }
-
-  saveButton.replaceWith(saveButton.cloneNode(true));
-  const newSaveButton = document.getElementById("save-selected-menus");
-
-  newSaveButton.addEventListener("click", async () => {
-
-    if (selectedMenus.length === 0) {
-      alert("Silahkan pilih minimal satu menu makanan!");
-      return;
-    }
-
-    const userId = getUserIdFromStorage();
-    console.log("userId =", userId);   
-    if (!userId) {
-      alert("User belum login!");
-      return;
-    }
-
-    const payload = {
-      userId,
-      menus: selectedMenus.map((menu) => ({
-        menuName: menu.menu_makanan,
-        ingredients: menu.bahan_makanan,
-        price: Number(menu["price (100 gr)"]),
-        protein: Number(menu.protein),
-        karbohidrat: Number(menu.karbohidrat),
-        serat: Number(menu.serat),
-        kalsium: Number(menu.kalsium),
-        fosfor: Number(menu.fosfor),
-        zat_besi: Number(menu.zat_besi),
-        natrium: Number(menu.natrium),
-        kalium: Number(menu.kalium),
-        tembaga: Number(menu.tembaga),
-        seng: Number(menu.seng),
-        vit_c: Number(menu.vit_c),
-        air: Number(menu["air (ml)"]),
-        energi: Number(menu["energi (kal)"]),
-        lemak_total: Number(menu.lemak_total),
-      })),
-    };
-
-    try {
-      const response = await ApiBackend.post("/save-menu", payload);
-
-      if (response.status === 201) {
-        alert(`${selectedMenus.length} menu berhasil disimpan ke database!`);
-        selectedMenus = [];
-
-        document.querySelectorAll(".select-menu").forEach((cb) => {
-          cb.checked = false;
-        });
-      } else {
-        alert("Gagal menyimpan menu. Status: " + response.status);
+    function getUserIdFromStorage() {
+      try {
+        const raw = localStorage.getItem("user");
+        if (!raw) return null;
+        const u = JSON.parse(raw);
+        return u.id_user || u.id || u.userId || null; // sesuaikan jika perlu
+      } catch (_) {
+        return null;
       }
-    } catch (err) {
-      console.error("❌ Gagal mengirim menu:", err);
-      alert("Terjadi kesalahan saat menyimpan menu.");
     }
-  });
-}
+
+    function initSaveButton() {
+      const saveButton = document.getElementById("save-selected-menus");
+
+      if (!saveButton) {
+        console.error("❌ Tombol #save-selected-menus tidak ditemukan di DOM.");
+        return;
+      }
+
+      saveButton.replaceWith(saveButton.cloneNode(true));
+      const newSaveButton = document.getElementById("save-selected-menus");
+
+      newSaveButton.addEventListener("click", async () => {
+        if (selectedMenus.length === 0) {
+          alert("Silahkan pilih minimal satu menu makanan!");
+          return;
+        }
+
+        const userId = getUserIdFromStorage();
+        console.log("userId =", userId);
+        if (!userId) {
+          alert("User belum login!");
+          return;
+        }
+
+        const payload = {
+          userId,
+          menus: selectedMenus.map((menu) => ({
+            menuName: menu.menu_makanan,
+            ingredients: menu.bahan_makanan,
+            price: Number(menu["price (100 gr)"]),
+            protein: Number(menu.protein),
+            karbohidrat: Number(menu.karbohidrat),
+            serat: Number(menu.serat),
+            kalsium: Number(menu.kalsium),
+            fosfor: Number(menu.fosfor),
+            zat_besi: Number(menu.zat_besi),
+            natrium: Number(menu.natrium),
+            kalium: Number(menu.kalium),
+            tembaga: Number(menu.tembaga),
+            seng: Number(menu.seng),
+            vit_c: Number(menu.vit_c),
+            air: Number(menu["air (ml)"]),
+            energi: Number(menu["energi (kal)"]),
+            lemak_total: Number(menu.lemak_total),
+          })),
+        };
+
+        try {
+          const response = await ApiBackend.post("/save-menu", payload);
+
+          if (response.status === 201) {
+            alert(
+              `${selectedMenus.length} menu berhasil disimpan ke database!`
+            );
+            selectedMenus = [];
+
+            document.querySelectorAll(".select-menu").forEach((cb) => {
+              cb.checked = false;
+            });
+          } else {
+            alert("Gagal menyimpan menu. Status: " + response.status);
+          }
+        } catch (err) {
+          console.error("❌ Gagal mengirim menu:", err);
+          alert("Terjadi kesalahan saat menyimpan menu.");
+        }
+      });
+    }
   },
 };
 
