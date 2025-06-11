@@ -1,5 +1,6 @@
 // src/pages/food-input/food-input-page.js
 
+import Swal from "sweetalert2";
 import { ApiBackend, ApiMl } from "../../../api";
 
 const FoodInputPage = {
@@ -1251,21 +1252,36 @@ const FoodInputPage = {
             lemak_total: Number(menu.lemak_total),
           })),
         };
-
+    
         try {
           const response = await ApiBackend.post("/save-menu", payload);
 
           if (response.status === 201) {
-            alert(
-              `${selectedMenus.length} menu berhasil disimpan ke database!`
-            );
+            Swal.fire({
+              icon: "success",
+              title: "Menu Tersimpan!",
+              text: `${selectedMenus.length} menu berhasil disimpan ke database!`,
+              allowEscapeKey: false,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+            }).then(() => {
+              // Redirect to menu list page
+              window.location.href = "/#/food-detail";
+            });
             selectedMenus = [];
 
             document.querySelectorAll(".select-menu").forEach((cb) => {
               cb.checked = false;
             });
           } else {
-            alert("Gagal menyimpan menu. Status: " + response.status);
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Menyimpan Menu",
+              text: `Status: ${response.status}. Silakan coba lagi.`,
+              allowEscapeKey: false,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+            });
           }
         } catch (err) {
           console.error("❌ Gagal mengirim menu:", err);
