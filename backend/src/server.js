@@ -1,4 +1,5 @@
 const Hapi = require("@hapi/hapi");
+const Inert = require("@hapi/inert");
 const { PrismaClient } = require("@prisma/client");
 const commentRoutes = require("./routes/comment");
 const authRoutes = require("./routes/auth");
@@ -9,11 +10,24 @@ const prisma = new PrismaClient();
 
 const init = async () => {
   const server = Hapi.server({
-    port: 3000,
-    host: "localhost",
+    port: process.env.PORT || 3000,
+     host: "0.0.0.0", 
     routes: {
       cors: {
         origin: ["*"],
+      },
+    },
+  });
+
+  await server.register(Inert);
+
+   server.route({
+    method: "GET",
+    path: "/{param*}",
+    handler: {
+      directory: {
+        path: Path.join(__dirname, "dist"),
+        index: ["index.html"],
       },
     },
   });
