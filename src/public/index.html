@@ -19,6 +19,13 @@
 
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <link
+      href="./images/nutrikids.png"
+      width="16"
+      height="32"
+      rel="shortcut icon"
+    />
   </head>
   <body>
     <header>
@@ -34,12 +41,22 @@
         <span id="userName" style="display: none"></span>
         <a href="#/login" class="guest-only">Sign In</a>
         <a href="#/register" class="guest-only">Create Account</a>
-        <a href="#/home" class="auth-required"><i class="fas fa-home"></i> Home</a>
+        <a href="#/home" class="auth-required"
+          ><i class="fas fa-home"></i> Home</a
+        >
         <a href="#/about"><i class="fas fa-info-circle"></i> Tentang</a>
         <a href="#/features"><i class="fas fa-list-ul"></i> Fitur</a>
         <a href="#/contact"><i class="fas fa-envelope"></i> Kontak</a>
-        <a href="#/food-detail" class="auth-required"><i class="fas fa-utensils"></i> Menu</a>
-        <a href="#/logout" id="logoutBtn" class="auth-required" style="display: none">Logout</a>
+        <a href="#/food-detail" class="auth-required"
+          ><i class="fas fa-utensils"></i> Menu</a
+        >
+        <a
+          href="#/logout"
+          id="logoutBtn"
+          class="auth-required"
+          style="display: none"
+          >Logout</a
+        >
       </nav>
     </header>
 
@@ -65,31 +82,30 @@
     </script>
     <script>
       function updateNavbar() {
-      const token = localStorage.getItem("authToken");
-      const user = JSON.parse(localStorage.getItem("user"));
+        const token = localStorage.getItem("authToken");
+        const user = JSON.parse(localStorage.getItem("user"));
 
-      const userNameSpan = document.getElementById("userName");
-      const logoutBtn = document.getElementById("logoutBtn");
+        const userNameSpan = document.getElementById("userName");
+        const logoutBtn = document.getElementById("logoutBtn");
 
-      const authLinks = document.querySelectorAll(".auth-required");
-      const guestLinks = document.querySelectorAll(".guest-only");
+        const authLinks = document.querySelectorAll(".auth-required");
+        const guestLinks = document.querySelectorAll(".guest-only");
 
-      if (token && user) {
-        // Show auth-required, hide guest-only
-        authLinks.forEach((link) => (link.style.display = "inline-block"));
-        guestLinks.forEach((link) => (link.style.display = "none"));
+        if (token && user) {
+          // Show auth-required, hide guest-only
+          authLinks.forEach((link) => (link.style.display = "inline-block"));
+          guestLinks.forEach((link) => (link.style.display = "none"));
 
-        userNameSpan.textContent = `Hello, ${user.firstName || user.email}`;
-        userNameSpan.style.display = "inline-block";
-      } else {
-        // Hide auth-required, show guest-only
-        authLinks.forEach((link) => (link.style.display = "none"));
-        guestLinks.forEach((link) => (link.style.display = "inline-block"));
+          userNameSpan.textContent = `Hello, ${user.firstName || user.email}`;
+          userNameSpan.style.display = "inline-block";
+        } else {
+          // Hide auth-required, show guest-only
+          authLinks.forEach((link) => (link.style.display = "none"));
+          guestLinks.forEach((link) => (link.style.display = "inline-block"));
 
-        userNameSpan.style.display = "none";
+          userNameSpan.style.display = "none";
+        }
       }
-    }
-
 
       document.addEventListener("DOMContentLoaded", () => {
         updateNavbar();

@@ -118,3 +118,41 @@ nav a i {
     border-bottom: 1px solid var(--gray-200);
   }
 }
+
+@media screen and (max-width: 1024px) {
+  .hamburger {
+    display: block;
+  }
+
+  nav {
+    display: none; /* Sembunyikan nav utama */
+  }
+
+  nav.navbar-menu {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: var(--shadow-lg);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5rem var(--space-6) var(--space-6);
+    transition: right var(--transition) var(--easing);
+    z-index: 999;
+  }
+
+  nav.navbar-menu.active {
+    right: 0;
+  }
+
+  nav.navbar-menu a {
+    margin-bottom: var(--space-6);
+    width: 100%;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+}

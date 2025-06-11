@@ -2,6 +2,7 @@
 import "./styles/root.css";
 import "./styles/main.css";
 import "./styles/food-input.css";
+import "./styles/food-detail.css";
 import "./styles/home-page.css";
 import "./styles/header.css";
 import "./styles/features-page.css";
