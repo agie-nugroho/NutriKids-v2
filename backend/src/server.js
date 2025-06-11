@@ -1,6 +1,8 @@
 const Hapi = require("@hapi/hapi");
 const Inert = require("@hapi/inert");
 const { PrismaClient } = require("@prisma/client");
+const Path = require("path")
+
 const commentRoutes = require("./routes/comment");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
@@ -30,6 +32,31 @@ const init = async () => {
         index: ["index.html"],
       },
     },
+  });
+
+   server.ext("onPreResponse", (request, h) => {
+    const response = request.response;
+
+    if (request.method === "options") {
+      return h
+        .response()
+        .code(200)
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        .header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    }
+
+    if (response.isBoom) {
+      response.output.headers["Access-Control-Allow-Origin"] = "*";
+      response.output.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+      response.output.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+    } else if (response.header) {
+      response.header("Access-Control-Allow-Origin", "*");
+      response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+      response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    }
+
+    return h.continue;
   });
 
   server.route(commentRoutes);
