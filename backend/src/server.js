@@ -10,6 +10,7 @@ const userRoutes = require("./routes/user");
 const saveMenuRoutes = require("./routes/save-menu");
 
 const prisma = new PrismaClient();
+const FRONTEND_URL = "https://nutrikids-v2-production-a1b6.up.railway.app";
 
 const init = async () => {
   const server = Hapi.server({
@@ -17,8 +18,10 @@ const init = async () => {
     host: "0.0.0.0", 
     routes: {
       cors: {
-        origin: ["*"],
+        origin: [FRONTEND_URL],
         credentials: true,
+        additionalHeaders: ['cache-control', 'x-requested-with'],
+        additionalExposedHeaders: ['authorization'],
       },
     },
   });
@@ -43,7 +46,7 @@ const init = async () => {
       return h
         .response()
         .code(200)
-        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Origin", FRONTEND_URL)
         .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         .header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
