@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const isLocal = window.location.hostname === "localhost";
 
 // Ganti URL ini dengan URL Railway backend & ML API kamu
@@ -7,7 +9,7 @@ const BACKEND_URL = isLocal
 
 const ML_URL = isLocal
   ? "http://localhost:8000"
-  : "https://nutrikids-ml-production.up.railway.app"; // <- FastAPI (ganti sesuai subdomain kamu)
+  : "https://nutrikids-ml-production.up.railway.app"; 
 
 export const ApiBackend = axios.create({
   baseURL: BACKEND_URL,
