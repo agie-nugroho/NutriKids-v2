@@ -3,6 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const commentRoutes = require('./routes/comment');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const saveMenuRoutes = require('./routes/save-menu');
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,7 @@ const init = async () => {
     server.route(commentRoutes);
     server.route(authRoutes);
     server.route(userRoutes);
+    server.route(saveMenuRoutes);
 
     await server.start();
     console.log('Server running: ', server.info.uri)

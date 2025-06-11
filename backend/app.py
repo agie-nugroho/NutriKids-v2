@@ -84,6 +84,8 @@ def recommend(bahan: str = Query(...), budget: int = Query(...)):
     ].to_dict(orient="records")
 
 
+
+# --- Endpoint: Rekomendasi Menu Completed ---
 class UserInput(BaseModel):
     user_ingredients: str
     user_rasa: Optional[str] = None
