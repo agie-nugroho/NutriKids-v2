@@ -49,7 +49,6 @@ const LoginPage = {
                     <span class="checkmark"></span>
                     Remember me
                   </label>
-                  <a href="#/forgot-password" class="forgot-link">Forgot Password?</a>
                 </div>
                 
                 <button type="submit" class="auth-button" id="loginButton">
