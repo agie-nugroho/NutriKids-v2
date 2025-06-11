@@ -1,3 +1,4 @@
+require("dotenv").config(); 
 const Hapi = require("@hapi/hapi");
 const Inert = require("@hapi/inert");
 const { PrismaClient } = require("@prisma/client");
@@ -13,10 +14,11 @@ const prisma = new PrismaClient();
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
-     host: "0.0.0.0", 
+    host: "0.0.0.0", 
     routes: {
       cors: {
         origin: ["*"],
+        credentials: true,
       },
     },
   });
