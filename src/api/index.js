@@ -8,7 +8,7 @@ const BACKEND_URL = isLocalhost
 
 const ML_URL = isLocalhost
   ? "http://localhost:8000"
-  : "https://nutrikids-ml-production.up.railway.app";
+  : "https://nutrikids-v2-production-8168.up.railway.app";
 
 // Backend untuk auth, save menu, dll
 export const ApiBackend = axios.create({
