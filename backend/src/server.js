@@ -11,7 +11,6 @@ const saveMenuRoutes = require('./routes/save-menu');
 
 const prisma = new PrismaClient();
 
-/** ⬇️ Cukup array biasa, TANPA array di dalam array */
 const FRONTEND_URL = [
   'http://localhost:8110',
   'https://nutrikids-v2-production-a1b6.up.railway.app',
@@ -21,10 +20,10 @@ const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
     host: '0.0.0.0',
-    /** ⬇️ CORS global */
+    
     routes: {
       cors: {
-        origin: FRONTEND_URL,        // ← perbaiki di sini
+        origin: FRONTEND_URL,        
         credentials: true,
         additionalHeaders: [
           'cache-control',
@@ -39,7 +38,6 @@ const init = async () => {
 
   await server.register(Inert);
 
-  /* Static assets (opsional) */
   server.route({
     method: 'GET',
     path: '/{param*}',
@@ -51,14 +49,7 @@ const init = async () => {
     },
   });
 
-  /* ❌ Hapus hook ini – Hapi sudah menangani pre-flight sendiri
-  server.ext('onPreResponse', (request, h) => {
-    if (request.method === 'options') {
-      return h.response().code(200);
-    }
-    return h.continue;
-  });
-  */
+  
 
   server.route([
     ...commentRoutes,
