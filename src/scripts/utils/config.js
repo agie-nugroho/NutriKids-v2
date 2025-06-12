@@ -1,4 +1,4 @@
-// Configuration settings for the application
+// Configuration settings 
 
 const CONFIG = {
   // API endpoints
@@ -68,10 +68,10 @@ const CONFIG = {
     },
   },
 
-  // Default settings
+  // Default 
   DEFAULTS: {
-    budget_max: 50000, // 50,000 IDR
-    results_limit: 5, // Show 5 recommendations by default
+    budget_max: 50000, 
+    results_limit: 5, 
   },
 };
 
