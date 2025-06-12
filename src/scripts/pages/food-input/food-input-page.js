@@ -1056,6 +1056,7 @@ const FoodInputPage = {
           });
 
           const result = response.data;
+          
 
           if (Array.isArray(result) && result.length > 0) {
             const menus = result
@@ -1070,25 +1071,9 @@ const FoodInputPage = {
                 <p class="menu-detail">Bahan: ${menu.bahan_makanan}</p>
                 <p class="menu-detail">Harga: Rp ${menu[
                   "price (100 gr)"
-                ].toLocaleString("id-ID")}</p>
-                <p class="menu-detail">Skor Kemiripan: ${menu.similarity.toFixed(
-                  2
-                )}</p>
+                ].toLocaleString("id-ID")}</p>    
                 <div class="nutrisi-details">
-                  <p><strong>Protein:</strong> ${menu.protein} mg</p>
-                  <p><strong>Karbohidrat:</strong> ${menu.karbohidrat} mg</p>
-                  <p><strong>Serat:</strong> ${menu.serat} mg</p>
-                  <p><strong>Kalsium:</strong> ${menu.kalsium} mg</p>
-                  <p><strong>Fosfor:</strong> ${menu.fosfor} mg</p>
-                  <p><strong>Zat Besi:</strong> ${menu.zat_besi} mg</p>
-                  <p><strong>Natrium:</strong> ${menu.natrium} mg</p>
-                  <p><strong>Kalium:</strong> ${menu.kalium} mg</p>
-                  <p><strong>Tembaga:</strong> ${menu.tembaga} mg</p>
-                  <p><strong>Seng:</strong> ${menu.seng} mg</p>
-                  <p><strong>Vitamin C:</strong> ${menu.vit_c} mg</p>
-                  <p><strong>Air:</strong> ${menu["air (ml)"]} mg</p>
-                  <p><strong>Energi:</strong> ${menu["energi (kal)"]} kal</p>
-                  <p><strong>Lemak Total:</strong> ${menu.lemak_total} mg</p>
+                 <button class="nutrisi-button" data-menu='${encodeURIComponent(JSON.stringify(menu))}'>Lihat Kategori</button>
                 </div>
               </div>
             </div>
@@ -1104,7 +1089,7 @@ const FoodInputPage = {
 
             resultContainer.innerHTML = `
             <div class="recommendation-header">
-              <h3>🍽️ Rekomendasi Makanan untuk ${formData.name}</h3>
+              <h3> Rekomendasi Makanan untuk ${formData.name}</h3>
               <div class="recommendation-details">
                 <div class="detail-item">
                   <strong>Waktu Makan:</strong> ${
@@ -1129,14 +1114,24 @@ const FoodInputPage = {
             <div class="menu-grid">
               ${menus}
             </div>
-            <div class="button-container">
-              <button id="save-selected-menus" class="primary-button">Simpan Rekomendasi</button>
-            </div>
-            <div class="recommendation-footer">
-              <p class="footer-note"> Pilih salah satu atau lebih rekomendasi makanan di atas</p>
-            </div>
+          <div class="button-container">
+            <button id="save-selected-menus" class="primary-button">Simpan Rekomendasi</button>
+            <button id="cek-kecukupan" class="primary-button">Cek Kecukupan</button>
+            <button id="cari-tambahan" class="secondary-button" style="display:none;">Cari Menu Tambahan</button>
+          </div>
+          
+          <div class="recommendation-footer">
+            <p class="footer-note"> Pilih salah satu atau lebih rekomendasi makanan di atas</p>
+          </div>
+
+           <div id="hasil-kecukupan" class="hasil-kecukupan-section"></div>
+           <div id="saran-tambahan" class="saran-tambahan-section"></div>
+           <div id="ringkasan-final" style="display:none;"></div>
+
           `;
             initSaveButton();
+            initCekKecukupanDanSaran();
+            
           } else {
             resultContainer.innerHTML = `
               <div class="no-results-container">
@@ -1153,6 +1148,47 @@ const FoodInputPage = {
               </div>
             `;
           }
+
+    document.querySelectorAll(".nutrisi-button").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+    const menu = JSON.parse(decodeURIComponent(e.target.dataset.menu));
+
+
+    // Buat payload untuk prediksi
+      const nutritionPayload = {
+      protein: menu.protein,
+      karbohidrat: menu.karbohidrat,
+      serat: menu.serat,
+      kalsium: menu.kalsium,
+      fosfor: menu.fosfor,
+      zat_besi: menu.zat_besi,
+      natrium: menu.natrium,
+      kalium: menu.kalium,
+      tembaga: menu.tembaga,
+      seng: menu.seng,
+      vit_c: menu.vit_c
+    };
+
+        try {
+          const res = await ApiMl.post("/predict-kategori", nutritionPayload);
+          const { kategori_gizi, confidence } = res.data;
+
+          Swal.fire({
+            title: `Nutrisi & Kategori Gizi`,
+            html: `
+              <p><strong>Menu:</strong> ${menu.menu_makanan}</p>
+              
+              <p><strong>Kategori Gizi:</strong> <span style="color:green;">${kategori_gizi}</span></p>
+              <p><strong>Akurasi Prediksi:</strong> ${(confidence * 100).toFixed(2)}%</p>
+            `,
+            confirmButtonText: "Tutup",
+          });
+        } catch (err) {
+          console.error("❌ Gagal memuat kategori gizi:", err);
+          Swal.fire("Gagal", "Terjadi kesalahan saat mengambil data kategori gizi.", "error");
+        }
+      });
+    });
 
           // Smooth scroll to results
           resultContainer.scrollIntoView({ behavior: "smooth" });
@@ -1193,6 +1229,250 @@ const FoodInputPage = {
       }
     });
 
+function tampilkanHasilKecukupan(data) {
+  const output = document.getElementById("hasil-kecukupan");
+  if (!output) return;
+
+  if (!Array.isArray(data)) {
+    output.innerHTML = "<p>❗ Format data tidak valid.</p>";
+    return;
+  }
+
+  const rows = data.map((item) => `
+    <tr>
+      <td>${item["Zat Gizi"]}</td>
+      <td>${item.Asupan}</td>
+      <td>${item.Kebutuhan}</td>
+      <td>${item.Status}</td>
+    </tr>
+  `).join("");
+
+  output.innerHTML = `
+    <h4>Status Kecukupan Gizi:</h4>
+    <table class="tabel-gizi">
+      <thead>
+        <tr>
+          <th>Zat Gizi</th><th>Asupan</th><th>Kebutuhan</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  // Cek apakah semua zat gizi cukup
+  const semuaCukup = data.every(item => item.Status.includes("Cukup"));
+  if (semuaCukup) {
+    tampilkanRingkasanFinal([...selectedMenus, ...(window.tambahanMenus || [])]);
+  }
+}
+
+
+function tampilkanSaranTambahanBertahap(menus, urutanZat, onSelesaiPilih) {
+  const container = document.getElementById("saran-tambahan");
+  if (!container || !Array.isArray(menus)) return;
+
+  let indexZat = 0;
+  let semuaDipilih = [];
+
+  function renderZat() {
+    if (indexZat >= urutanZat.length) {
+      onSelesaiPilih(semuaDipilih);
+      return;
+    }
+
+    const zatSekarang = urutanZat[indexZat];
+    const targetZat = 0.5;
+
+    const kandidat = menus
+      .filter(m => Number(m[zatSekarang]) > 0)
+      .sort((a, b) => Number(b[zatSekarang]) - Number(a[zatSekarang]));
+
+    if (kandidat.length === 0) {
+      indexZat++;
+      renderZat();
+      return;
+    }
+
+    container.innerHTML = `
+      <h4>Tambahan untuk Zat Gizi: <strong>${zatSekarang.toUpperCase()}</strong></h4>
+      <p>Target minimal: <strong>${targetZat}</strong></p>
+      <div id="menu-kandidat"></div>
+      <p id="total-asupan">Total asupan: <span>0</span></p>
+      <button id="next-zat" disabled>Lanjut Zat Berikutnya</button>
+    `;
+
+    const daftarMenu = kandidat.map((menu, i) => `
+      <div>
+        <label>
+          <input type="checkbox" class="tambah-menu" data-index="${i}">
+          ${menu.menu_makanan} (${zatSekarang}: ${menu[zatSekarang]})
+        </label>
+      </div>
+    `).join("");
+
+    document.getElementById("menu-kandidat").innerHTML = daftarMenu;
+
+    const checkboxEls = document.querySelectorAll(".tambah-menu");
+    const totalAsupanEl = document.querySelector("#total-asupan span");
+    const nextBtn = document.getElementById("next-zat");
+
+    function updateStatus() {
+      const checked = [...document.querySelectorAll(".tambah-menu:checked")];
+      const dipilih = checked.map(cb => kandidat[parseInt(cb.dataset.index)]);
+      const totalZat = dipilih.reduce((sum, m) => sum + Number(m[zatSekarang] || 0), 0);
+
+      totalAsupanEl.textContent = totalZat.toFixed(2);
+      nextBtn.disabled = totalZat < targetZat;
+    }
+
+    checkboxEls.forEach(cb => cb.addEventListener("change", updateStatus));
+
+    nextBtn.addEventListener("click", () => {
+      const checked = [...document.querySelectorAll(".tambah-menu:checked")];
+      const dipilih = checked.map(cb => kandidat[parseInt(cb.dataset.index)]);
+      const totalZat = dipilih.reduce((sum, m) => sum + Number(m[zatSekarang] || 0), 0);
+
+      if (totalZat < targetZat) {
+        alert(`❌ Total zat ${zatSekarang} belum mencukupi (${totalZat.toFixed(2)} < ${targetZat})`);
+        return;
+      }
+
+      semuaDipilih.push(...dipilih);
+      indexZat++;
+      renderZat();
+    });
+
+    updateStatus();
+  }
+
+  renderZat();
+}
+
+
+
+function tampilkanRingkasanFinal(menus) {
+  const container = document.getElementById("ringkasan-final");
+  if (!container) return;
+
+  const rows = menus.map(menu => `
+    <tr>
+      <td>${menu.menu_makanan}</td>
+      <td>Rp ${menu["price (100 gr)"].toLocaleString("id-ID")}</td>
+      <td>${menu.protein || 0}</td>
+      <td>${menu.karbohidrat || 0}</td>
+      <td>${menu.serat || 0}</td>
+    </tr>
+  `).join("");
+
+  const total = menus.reduce((sum, m) => sum + (m["price (100 gr)"] || 0), 0);
+
+  container.innerHTML = `
+    <h4>📦 Ringkasan Menu Akhir</h4>
+    <table class="tabel-gizi">
+      <thead>
+        <tr><th>Menu</th><th>Harga</th><th>Protein</th><th>Karbo</th><th>Serat</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p><strong>Total Pengeluaran:</strong> Rp ${total.toLocaleString("id-ID")}</p>
+  `;
+  container.style.display = "block";
+}
+
+
+
+ // Cek tombol cek-kecukupan ada dulu
+function initCekKecukupanDanSaran() {
+  const cekBtn = document.getElementById("cek-kecukupan");
+  const tambahanBtn = document.getElementById("cari-tambahan");
+
+  if (cekBtn) {
+    cekBtn.addEventListener("click", async () => {
+      if (selectedMenus.length === 0) {
+        alert("Pilih menu terlebih dahulu.");
+        return;
+      }
+
+      try {
+        const response = await ApiMl.post("/cek-kecukupan", {
+          menu_selected: selectedMenus,
+          usia: 8,
+          jenis_kelamin: "L",
+          meal_time: "lunch"
+        });
+
+        const result = response.data;
+        console.log("✅ Status Gizi:", result.status_gizi);
+        tampilkanHasilKecukupan(result.status_gizi);
+        window.statusGizi = result.status_gizi;
+
+        if (result.zat_kurang.length > 0) {
+          window.zatKurang = result.zat_kurang;
+          if (tambahanBtn) tambahanBtn.style.display = "block";
+        } else {
+          tampilkanRingkasanFinal(selectedMenus);
+          if (tambahanBtn) tambahanBtn.style.display = "none";
+        }
+      } catch (error) {
+        console.error("❌ Gagal cek kecukupan:", error);
+        alert("Terjadi kesalahan saat cek kecukupan.");
+      }
+    });
+  } else {
+    console.warn("❗ Tombol #cek-kecukupan tidak ditemukan.");
+  }
+
+  if (tambahanBtn) {
+    tambahanBtn.addEventListener("click", async () => {
+      if (!window.zatKurang || window.zatKurang.length === 0) {
+        alert("Tidak ada zat yang kurang.");
+        return;
+      }
+
+      const zatKurangDict = {};
+      for (let zat of window.zatKurang) {
+        zatKurangDict[zat] = 10; // bisa diganti nilai real
+      }
+
+      try {
+        const response = await ApiMl.post("/saran-menu-bertahap", {
+          menu_sudah_dipilih: selectedMenus.map(m => m.menu_makanan),
+          zat_kurang_dict: zatKurangDict
+        });
+
+        const saranMenus = response.data;
+        console.log("📋 Menu Tambahan Bertahap:", saranMenus);
+
+       
+        tampilkanSaranTambahanBertahap(saranMenus, window.zatKurang, async (menusDipilihTambahan) => {
+          window.tambahanMenus = menusDipilihTambahan;
+          const gabungan = [...selectedMenus, ...menusDipilihTambahan];
+
+          const cekUlang = await ApiMl.post("/cek-kecukupan", {
+            menu_selected: gabungan,
+            usia: 8,
+            jenis_kelamin: "L",
+            meal_time: "lunch"
+          });
+
+          tampilkanHasilKecukupan(cekUlang.data.status_gizi);
+          const semuaCukup = cekUlang.data.status_gizi.every(z => z.Status.includes("Cukup"));
+          if (semuaCukup) {
+            tampilkanRingkasanFinal(gabungan);
+            tambahanBtn.style.display = "none";
+          }
+        });
+      } catch (error) {
+        console.error("❌ Gagal ambil saran tambahan:", error);
+        alert("Gagal mengambil saran menu tambahan.");
+      }
+    });
+  } else {
+    console.warn("❗ Tombol #cari-tambahan tidak ditemukan.");
+  }
+}
+
+
     function getUserIdFromStorage() {
       try {
         const raw = localStorage.getItem("user");
@@ -1204,88 +1484,110 @@ const FoodInputPage = {
       }
     }
 
-    function initSaveButton() {
-      const saveButton = document.getElementById("save-selected-menus");
+  function initSaveButton() {
+  const saveButton = document.getElementById("save-selected-menus");
 
-      if (!saveButton) {
-        console.error("❌ Tombol #save-selected-menus tidak ditemukan di DOM.");
-        return;
-      }
+  if (!saveButton) {
+    console.error("❌ Tombol #save-selected-menus tidak ditemukan di DOM.");
+    return;
+  }
 
-      saveButton.replaceWith(saveButton.cloneNode(true));
-      const newSaveButton = document.getElementById("save-selected-menus");
+  // Remove event listener lama
+  saveButton.replaceWith(saveButton.cloneNode(true));
+  const newSaveButton = document.getElementById("save-selected-menus");
 
-      newSaveButton.addEventListener("click", async () => {
-        if (selectedMenus.length === 0) {
-          alert("Silahkan pilih minimal satu menu makanan!");
-          return;
-        }
+  newSaveButton.addEventListener("click", async () => {
+    const finalMenus = [...selectedMenus, ...(window.tambahanMenus || [])];
 
-        const userId = getUserIdFromStorage();
-        console.log("userId =", userId);
-        if (!userId) {
-          alert("User belum login!");
-          return;
-        }
+    if (finalMenus.length === 0) {
+      alert("Silahkan pilih minimal satu menu makanan!");
+      return;
+    }
 
-        const payload = {
-          userId,
-          menus: selectedMenus.map((menu) => ({
-            menuName: menu.menu_makanan,
-            ingredients: menu.bahan_makanan,
-            price: Number(menu["price (100 gr)"]),
-            protein: Number(menu.protein),
-            karbohidrat: Number(menu.karbohidrat),
-            serat: Number(menu.serat),
-            kalsium: Number(menu.kalsium),
-            fosfor: Number(menu.fosfor),
-            zat_besi: Number(menu.zat_besi),
-            natrium: Number(menu.natrium),
-            kalium: Number(menu.kalium),
-            tembaga: Number(menu.tembaga),
-            seng: Number(menu.seng),
-            vit_c: Number(menu.vit_c),
-            air: Number(menu["air (ml)"]),
-            energi: Number(menu["energi (kal)"]),
-            lemak_total: Number(menu.lemak_total),
-          })),
-        };
-    
-        try {
-          const response = await ApiBackend.post("/save-menu", payload);
+    const userId = getUserIdFromStorage();
+    if (!userId) {
+      alert("User belum login!");
+      return;
+    }
 
-          if (response.status === 201) {
-            Swal.fire({
-              icon: "success",
-              title: "Menu Tersimpan!",
-              text: `${selectedMenus.length} menu berhasil disimpan ke database!`,
-              allowEscapeKey: false,
-              allowOutsideClick: false,
-              confirmButtonText: "OK",
-            }).then(() => {
-              window.location.href = "/#/food-detail";
-            });
-            selectedMenus = [];
+    try {
+      // 1️⃣ Hitung total zat gizi untuk dikirim ke prediksi kategori
+      const totalGizi = {
+        protein: 0, karbohidrat: 0, serat: 0, kalsium: 0, fosfor: 0,
+        zat_besi: 0, natrium: 0, kalium: 0, tembaga: 0, seng: 0, vit_c: 0,
+      };
 
-            document.querySelectorAll(".select-menu").forEach((cb) => {
-              cb.checked = false;
-            });
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal Menyimpan Menu",
-              text: `Status: ${response.status}. Silakan coba lagi.`,
-              allowEscapeKey: false,
-              allowOutsideClick: false,
-              confirmButtonText: "OK",
-            });
-          }
-        } catch (err) {
-          console.error("❌ Gagal mengirim menu:", err);
-          alert("Terjadi kesalahan saat menyimpan menu.");
+      finalMenus.forEach(menu => {
+        for (let key in totalGizi) {
+          totalGizi[key] += Number(menu[key]) || 0;
         }
       });
+
+      // 2️⃣ Panggil model prediksi kategori gizi
+      const predResponse = await ApiMl.post("/predict-kategori", totalGizi);
+      const kategoriGizi = predResponse.data.kategori_gizi;
+      const statusGizi = window.statusGizi || [];
+
+      // 3️⃣ Buat payload untuk disimpan
+      const payload = {
+        userId,
+        kategoriGizi,
+        statusGizi,
+        menus: finalMenus.map(menu => ({
+        menuName: menu.menu_makanan || menu.menuName || "-",
+        ingredients: menu.bahan_makanan || menu.ingredients || "-",
+        price: Number(menu["price (100 gr)"] || menu.price || 0),
+
+        protein: Number(menu.protein) || 0,
+        karbohidrat: Number(menu.karbohidrat) || 0,
+        serat: Number(menu.serat) || 0,
+        kalsium: Number(menu.kalsium) || 0,
+        fosfor: Number(menu.fosfor) || 0,
+        zat_besi: Number(menu.zat_besi) || 0,
+        natrium: Number(menu.natrium) || 0,
+        kalium: Number(menu.kalium) || 0,
+        tembaga: Number(menu.tembaga) || 0,
+        seng: Number(menu.seng) || 0,
+        vit_c: Number(menu.vit_c) || 0,
+
+        air: Number(menu["air (ml)"] || menu.air || 0),
+        energi: Number(menu["energi (kal)"] || menu.energi || 0),
+        lemak_total: Number(menu.lemak_total) || 0,
+      }))
+      };
+
+      
+      const response = await ApiBackend.post("/save-menu", payload);
+
+      if (response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Menu Final Tersimpan!",
+          text: `${finalMenus.length} menu berhasil disimpan ke database!`,
+          confirmButtonText: "OK"
+        }).then(() => {
+          window.location.href = "/#/food-detail";
+        });
+
+        selectedMenus = [];
+        window.tambahanMenus = [];
+
+        document.querySelectorAll(".select-menu").forEach(cb => cb.checked = false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Menyimpan Menu",
+          text: `Status: ${response.status}. Silakan coba lagi.`,
+          confirmButtonText: "OK"
+        });
+      }
+
+    } catch (err) {
+      console.error("❌ Gagal menyimpan menu:", err);
+      alert("Terjadi kesalahan saat menyimpan menu.");
     }
+  });
+}
   },
 };
 

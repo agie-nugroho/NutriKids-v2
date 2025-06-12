@@ -67,6 +67,8 @@ model SavedMenu {
   air         Float
   energi      Float
   lemak_total Float
+  kategoriGizi    String?
+  statusGiziJson  Json?
   createdAt   DateTime @default(now())
 
   user User @relation("UserSavedMenus", fields: [userId], references: [id_user])
