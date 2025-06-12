@@ -1,5 +1,3 @@
-// src/scripts/utils/hamburger.js
-
 const HamburgerInitializer = {
   init() {
     this._initHamburgerMenu();
@@ -10,7 +8,6 @@ const HamburgerInitializer = {
     const hamburger = document.getElementById("hamburger");
     const navbar = document.getElementById("navbar");
 
-    // Create overlay element if it doesn't exist yet
     let overlay = document.querySelector(".menu-overlay");
     if (!overlay) {
       overlay = document.createElement("div");
@@ -22,7 +19,6 @@ const HamburgerInitializer = {
     if (hamburger && navbar) {
       console.log("Hamburger and navbar elements found");
 
-      // Toggle menu when hamburger is clicked
       hamburger.addEventListener("click", (event) => {
         event.preventDefault();
         navbar.classList.toggle("active");
@@ -31,7 +27,6 @@ const HamburgerInitializer = {
         console.log("Hamburger clicked - menu toggled");
       });
 
-      // Close menu when overlay is clicked
       overlay.addEventListener("click", () => {
         navbar.classList.remove("active");
         overlay.classList.remove("active");
@@ -39,7 +34,6 @@ const HamburgerInitializer = {
         console.log("Overlay clicked - menu closed");
       });
 
-      // Close menu when a nav link is clicked
       const navLinks = navbar.querySelectorAll("a");
       navLinks.forEach((link) => {
         link.addEventListener("click", () => {
