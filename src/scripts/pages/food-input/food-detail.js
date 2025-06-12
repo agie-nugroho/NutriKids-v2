@@ -69,7 +69,7 @@ const foodDetail = {
         title: "Belum Ada Menu",
         message:
           "Anda belum menyimpan menu apapun. Mulai jelajahi dan simpan menu favorit Anda!",
-        action: `<button class="primary-btn" onclick="window.location.hash='#/recommendation'">Cari Menu</button>`,
+        action: `<button class="primary-btn" onclick="window.location.hash='#/food-input'">Cari Menu</button>`,
       },
       error: {
         icon: "⚠️",
