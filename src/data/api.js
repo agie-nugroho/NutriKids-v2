@@ -1,12 +1,8 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
-// Get food recommendations based on input parameters
 const getRecommendations = async (params) => {
-  // In a real implementation, this would be an actual API call
-  // For now, we'll return mock data with a simulated delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Mock response data
       resolve({
         recommendations: [
           {
@@ -42,13 +38,11 @@ const getRecommendations = async (params) => {
           },
         ],
       });
-    }, 1000); // Simulate network delay
+    }, 1000);
   });
 };
 
-// Get available ingredients
 const getIngredients = async () => {
-  // In a real implementation, this would be an actual API call
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
@@ -63,7 +57,7 @@ const getIngredients = async () => {
         { id: 9, name: "Apples" },
         { id: 10, name: "Bananas" },
       ]);
-    }, 500); // Simulate network delay
+    }, 500);
   });
 };
 
