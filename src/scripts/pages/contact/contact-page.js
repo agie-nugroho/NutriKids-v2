@@ -1,4 +1,3 @@
-// src/pages/contact/contact-page.js
 import Swal from 'sweetalert2';
 import { ApiBackend } from '../../../api/index.js';
 
