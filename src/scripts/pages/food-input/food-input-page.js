@@ -980,28 +980,48 @@ const FoodInputPage = {
     if (submitFormBtn) {
       submitFormBtn.addEventListener("click", async () => {
         if (!formData.name.trim()) {
-          alert("Mohon masukkan nama anak");
+          Swal.fire({
+            icon: "warning",
+            title: "Nama Anak Kosong",
+            text: "Mohon masukkan nama anak untuk melanjutkan.",
+          });
           return;
         }
 
         if (!formData.age) {
-          alert("Mohon pilih usia anak");
+          Swal.fire({
+            icon: "warning",
+            title: "Usia Anak Kosong",
+            text: "Mohon masukkan usia anak untuk melanjutkan.",
+          });
           return;
         }
 
         if (!formData.mealTime) {
-          alert("Mohon pilih waktu makan");
+          Swal.fire({
+            icon: "warning",
+            title: "Waktu Makan Belum Dipilih",
+            text: "Mohon pilih waktu makan untuk melanjutkan.",
+          })
           return;
         }
 
         if (formData.ingredients.length === 0) {
-          alert("Mohon pilih minimal satu bahan makanan");
+          Swal.fire({
+            icon: "warning",
+            title: "Bahan Makanan Belum Dipilih",
+            text: "Mohon pilih minimal satu bahan makanan untuk melanjutkan.",
+          });
           return;
         }
 
         const budgetValue = parseInt(formData.budget);
         if (isNaN(budgetValue) || budgetValue < 15000 || budgetValue > 50000) {
-          alert("Mohon masukkan budget antara Rp 15.000 hingga Rp 50.000");
+          Swal.fire({
+            icon: "warning",
+            title: "Budget Tidak Valid",
+            text: "Mohon masukkan budget antara Rp 15.000 hingga Rp 50.000.",
+          });
           return;
         }
 
