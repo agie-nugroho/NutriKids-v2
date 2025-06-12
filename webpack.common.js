@@ -19,17 +19,17 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"], // inject CSS ke head
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: "asset/resource", // untuk image
+        type: "asset/resource",
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader", // modern JS support
+          loader: "babel-loader", 
           options: {
             presets: ["@babel/preset-env"],
           },
@@ -40,7 +40,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/public/index.html",
-      favicon: false, // bisa tambahkan favicon kalau ada
+      favicon: false,
     }),
   ],
   resolve: {
