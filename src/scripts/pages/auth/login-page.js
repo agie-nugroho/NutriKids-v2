@@ -1,5 +1,3 @@
-// src/pages/auth/login-page.js
-
 import Swal from "sweetalert2";
 import { ApiBackend } from "../../../api";
 
@@ -111,7 +109,6 @@ const LoginPage = {
 
       this.clearErrors();
 
-      // VALIDASI DULU
       if (!this.validateForm(loginData)) {
         Swal.close();
         buttonText.style.display = "inline-block";
@@ -212,17 +209,14 @@ const LoginPage = {
   },
 
   showMessage(message, type) {
-    // Create toast notification
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
 
     document.body.appendChild(toast);
 
-    // Show toast
     setTimeout(() => toast.classList.add("show"), 100);
 
-    // Hide toast after 3 seconds
     setTimeout(() => {
       toast.classList.remove("show");
       setTimeout(() => document.body.removeChild(toast), 300);
