@@ -38,7 +38,7 @@ module.exports = [
     method: "POST",
     path: "/save-menu",
     handler: async (request, h) => {
-      const { userId, menus } = request.payload;
+      const { userId, menus, kategoriGizi, statusGizi } = request.payload;
 
       if (!userId || !Array.isArray(menus)) {
         return h
@@ -53,6 +53,8 @@ module.exports = [
         const createdMenus = await prisma.savedMenu.createMany({
           data: menus.map((menu) => ({
             userId: userId,
+            kategoriGizi: kategoriGizi,
+            statusGiziJson: statusGizi, 
             menuName: menu.menuName,
             ingredients: menu.ingredients,
             price: menu.price,
