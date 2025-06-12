@@ -1,14 +1,10 @@
-// src/scripts/app.js
-
 import Routes from "./routes/routes";
 import UrlParser from "./routes/url-parser";
 
 const App = {
   async init() {
-    // Initialize the app
     await this._initialRender();
 
-    // Add event listener for route changes
     window.addEventListener("hashchange", () => {
       this._initialRender();
     });
@@ -23,16 +19,13 @@ const App = {
 
     content.innerHTML = await page.render();
 
-    // Execute any JavaScript after rendering the page
     if (page.afterRender) {
       await page.afterRender();
     }
 
-    // Initialize UI components after every page render
     this._initScrollEvents();
     this._initHamburgerMenu();
 
-    // Re-initialize AOS after page render for animations
     if (window.AOS) {
       window.AOS.refresh();
     }
@@ -55,7 +48,6 @@ const App = {
     const hamburger = document.getElementById("hamburger");
     const navbar = document.getElementById("navbar");
 
-    // Create overlay element for mobile menu if it doesn't exist
     let overlay = document.querySelector(".menu-overlay");
     if (!overlay) {
       overlay = document.createElement("div");
@@ -64,11 +56,9 @@ const App = {
     }
 
     if (hamburger && navbar) {
-      // Clean up old event listeners to prevent duplicates
       const newHamburger = hamburger.cloneNode(true);
       hamburger.parentNode.replaceChild(newHamburger, hamburger);
 
-      // Toggle menu when hamburger is clicked
       newHamburger.addEventListener("click", (event) => {
         event.preventDefault();
         navbar.classList.toggle("active");
@@ -77,14 +67,12 @@ const App = {
         console.log("Hamburger clicked, navbar toggled");
       });
 
-      // Close menu when overlay is clicked
       overlay.addEventListener("click", () => {
         navbar.classList.remove("active");
         overlay.classList.remove("active");
         document.body.classList.remove("overlay-active");
       });
 
-      // Close menu when a nav item is clicked
       const navLinks = navbar.querySelectorAll("a");
       navLinks.forEach((link) => {
         link.addEventListener("click", () => {
