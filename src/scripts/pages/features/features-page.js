@@ -1,5 +1,3 @@
-// src/pages/features/features-page.js
-
 const FeaturesPage = {
   async render() {
     return `
@@ -43,9 +41,7 @@ const FeaturesPage = {
     `;
   },
 
-  afterRender() {
-    // Tidak ada interaksi JS tambahan di sini
-  },
+  afterRender() {},
 };
 
 export default FeaturesPage;

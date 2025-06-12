@@ -1,4 +1,3 @@
-// src/pages/home/home-page.js
 import Swal from "sweetalert2";
 import anakImage from "../../../public/images/anak.png";
 

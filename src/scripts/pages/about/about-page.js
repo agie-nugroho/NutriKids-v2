@@ -1,5 +1,3 @@
-// src/pages/about/about-page.js
-
 const AboutPage = {
   async render() {
     return `
@@ -28,9 +26,7 @@ const AboutPage = {
     `;
   },
 
-  afterRender() {
-    // Jika ada interaksi JS tambahan, bisa ditambahkan di sini
-  },
+  afterRender() {},
 };
 
 export default AboutPage;

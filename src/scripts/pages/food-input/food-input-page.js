@@ -1,5 +1,3 @@
-// src/pages/food-input/food-input-page.js
-
 import Swal from "sweetalert2";
 import { ApiBackend, ApiMl } from "../../../api";
 
@@ -126,7 +124,7 @@ const FoodInputPage = {
   },
 
   async afterRender() {
-    // Complete ingredients database with categories
+    // Complete ingredients database 
     const completeIngredientsDatabase = {
       serealia: [
         { id: "beras", name: "Beras", icon: "🌾" },
@@ -766,7 +764,7 @@ const FoodInputPage = {
       ],
     };
 
-    // Meal-time specific ingredients (filtered from complete database)
+    // Meal-time specific ingredients
     const mealTimeIngredients = {
       breakfast: [
         ...completeIngredientsDatabase.serealia.slice(0, 3),
@@ -797,8 +795,7 @@ const FoodInputPage = {
         { id: "quinoa", name: "Quinoa", icon: "🌾" },
       ],
     };
-
-    // References to DOM elements
+    
     const submitFormBtn = document.getElementById("submit-form");
     const resultContainer = document.getElementById("recommendation-result");
     const ingredientsContainer = document.getElementById(
@@ -831,17 +828,15 @@ const FoodInputPage = {
       formData.mealTime = e.target.value;
       currentMealTime = e.target.value;
       updateIngredientsDisplay();
-      // Clear previously selected ingredients when meal time changes
       formData.ingredients = [];
       updateSelectedIngredientsDisplay();
     });
-
-    // Handle category tab clicks
+    
     categoryTabs.forEach((tab) => {
       tab.addEventListener("click", (e) => {
-        // Remove active class from all tabs
+        // Remove active class 
         categoryTabs.forEach((t) => t.classList.remove("active"));
-        // Add active class to clicked tab
+        // Add active class 
         e.target.classList.add("active");
         currentCategory = e.target.dataset.category;
         updateIngredientsDisplay();
@@ -854,7 +849,6 @@ const FoodInputPage = {
       updateIngredientsDisplay(searchTerm);
     });
 
-    // Update ingredients display based on meal time, category, and search
     function updateIngredientsDisplay(searchTerm = "") {
       if (!currentMealTime || !mealTimeIngredients[currentMealTime]) {
         ingredientsContainer.innerHTML =
@@ -864,12 +858,10 @@ const FoodInputPage = {
 
       let ingredients = mealTimeIngredients[currentMealTime];
 
-      // Filter by category if not "all"
       if (currentCategory !== "all") {
         ingredients = completeIngredientsDatabase[currentCategory] || [];
       }
 
-      // Filter by search term
       if (searchTerm) {
         ingredients = ingredients.filter((ingredient) =>
           ingredient.name.toLowerCase().includes(searchTerm)
@@ -900,7 +892,6 @@ const FoodInputPage = {
         )
         .join("");
 
-      // Add click event listeners to ingredient items
       ingredientsContainer
         .querySelectorAll(".ingredient-item")
         .forEach((item) => {
@@ -911,13 +902,11 @@ const FoodInputPage = {
             );
 
             if (item.classList.contains("selected")) {
-              // Remove ingredient
               item.classList.remove("selected");
               formData.ingredients = formData.ingredients.filter(
                 (ing) => ing.id !== ingredientId
               );
             } else {
-              // Add ingredient
               item.classList.add("selected");
               formData.ingredients.push(ingredient);
             }
@@ -946,19 +935,16 @@ const FoodInputPage = {
         )
         .join("");
 
-      // Add remove functionality
       selectedIngredientsContainer
         .querySelectorAll(".remove-ingredient")
         .forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const ingredientId = e.target.dataset.ingredient;
 
-            // Remove from formData
             formData.ingredients = formData.ingredients.filter(
               (ing) => ing.id !== ingredientId
             );
 
-            // Remove selection from ingredients grid
             const ingredientItem = ingredientsContainer.querySelector(
               `[data-ingredient="${ingredientId}"]`
             );
@@ -971,7 +957,6 @@ const FoodInputPage = {
         });
     }
 
-    // Handle form input changes
     document.getElementById("childName").addEventListener("input", (e) => {
       formData.name = e.target.value;
     });
@@ -992,10 +977,8 @@ const FoodInputPage = {
       formData.taste = e.target.value;
     });
 
-    // Handle form submission
     if (submitFormBtn) {
       submitFormBtn.addEventListener("click", async () => {
-        // Validation
         if (!formData.name.trim()) {
           alert("Mohon masukkan nama anak");
           return;
@@ -1022,7 +1005,6 @@ const FoodInputPage = {
           return;
         }
 
-        // Show loading
         resultContainer.innerHTML = `<div class="loading">🔍 Sedang mencari rekomendasi makanan...</div>`;
 
         // Convert meal time to Indonesian
@@ -1167,19 +1149,15 @@ const FoodInputPage = {
       });
     }
 
-    // Initialize with empty ingredients display
     updateIngredientsDisplay();
 
-    // Global scope (di luar fungsi) → agar tidak di-reset
     let selectedMenus = [];
-
-    // ✅ Pasang event delegation 1x saja
+    
     document.body.addEventListener("change", (e) => {
       if (e.target.classList.contains("select-menu")) {
         const menu = JSON.parse(e.target.dataset.menu);
 
         if (e.target.checked) {
-          // Hindari duplikat
           if (
             !selectedMenus.some((m) => m.menu_makanan === menu.menu_makanan)
           ) {
@@ -1200,7 +1178,7 @@ const FoodInputPage = {
         const raw = localStorage.getItem("user");
         if (!raw) return null;
         const u = JSON.parse(raw);
-        return u.id_user || u.id || u.userId || null; // sesuaikan jika perlu
+        return u.id_user || u.id || u.userId || null; 
       } catch (_) {
         return null;
       }
@@ -1265,7 +1243,6 @@ const FoodInputPage = {
               allowOutsideClick: false,
               confirmButtonText: "OK",
             }).then(() => {
-              // Redirect to menu list page
               window.location.href = "/#/food-detail";
             });
             selectedMenus = [];

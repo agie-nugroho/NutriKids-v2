@@ -1,5 +1,3 @@
-// src/pages/auth/register-page.js
-
 import Swal from "sweetalert2";
 import { ApiBackend } from "../../../api";
 
@@ -317,7 +315,6 @@ const RegisterPage = {
       isValid = false;
     }
 
-    // Last name validation
     if (!data.lastName || data.lastName.trim().length < 2) {
       this.showError(
         "lastNameError",
@@ -326,7 +323,6 @@ const RegisterPage = {
       isValid = false;
     }
 
-    // Email validation
     if (!data.email) {
       this.showError("emailError", "Email is required");
       isValid = false;
@@ -335,7 +331,7 @@ const RegisterPage = {
       isValid = false;
     }
 
-    // Phone validation (optional but if provided should be valid)
+    // Phone validation
     if (data.phone && !this.isValidPhone(data.phone)) {
       this.showError("phoneError", "Please enter a valid phone number");
       isValid = false;
@@ -473,10 +469,8 @@ const RegisterPage = {
 
     document.body.appendChild(toast);
 
-    // Show toast
     setTimeout(() => toast.classList.add("show"), 100);
 
-    // Hide toast after 3 seconds
     setTimeout(() => {
       toast.classList.remove("show");
       setTimeout(() => {

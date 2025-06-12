@@ -1,4 +1,3 @@
-// import "./styles/styles.css";
 import "./styles/root.css";
 import "./styles/main.css";
 import "./styles/food-input.css";

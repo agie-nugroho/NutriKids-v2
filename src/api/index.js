@@ -10,13 +10,11 @@ const ML_URL = isLocalhost
   ? "http://localhost:8000"
   : "https://nutrikids-v2-production-8168.up.railway.app";
 
-// Backend untuk auth, save menu, dll
 export const ApiBackend = axios.create({
   baseURL: BACKEND_URL,
-  withCredentials: true, // kalau kamu pakai cookies atau session
+  withCredentials: true,
 });
 
-// ML API untuk rekomendasi makanan
 export const ApiMl = axios.create({
   baseURL: ML_URL,
 });

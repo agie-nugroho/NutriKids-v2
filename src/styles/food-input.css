@@ -1,36 +1,19 @@
-/* === SECTION: Meal Planner Section === */
 .meal-planner-section {
   padding: var(--space-12) var(--space-4);
   background: var(--background-gradient);
   min-height: 100vh;
-  margin-top: 80px; /* Added margin top for container */
+  margin-top: 80px;
   position: relative;
   overflow: hidden;
 }
-
 .meal-planner-section::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-      circle at 20% 20%,
-      rgba(16, 185, 129, 0.06) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      rgba(139, 92, 246, 0.06) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(251, 191, 36, 0.04) 0%,
-      transparent 60%
-    );
+  background: radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.06) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.04) 0%, transparent 60%);
   pointer-events: none;
   animation: backgroundShift 12s ease-in-out infinite alternate;
 }
-
 @keyframes backgroundShift {
   0% {
     transform: translateX(0) translateY(0) scale(1);
@@ -39,7 +22,6 @@
     transform: translateX(15px) translateY(-15px) scale(1.02);
   }
 }
-
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -47,10 +29,8 @@
   position: relative;
   z-index: 1;
 }
-
-/* === TYPOGRAPHY === */
 h1 {
-  color: var(--text-dark); /* Black color for title */
+  color: var(--text-dark);
   font-weight: 800;
   text-align: center;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
@@ -58,9 +38,8 @@ h1 {
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
-
 h2 {
-  color: var(--primary); /* Green color for other headings */
+  color: var(--primary);
   font-weight: 700;
   text-align: center;
   font-size: clamp(1.8rem, 4vw, 3.2rem);
@@ -68,7 +47,6 @@ h2 {
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
-
 .subtitle {
   text-align: center;
   font-size: clamp(1.1rem, 2.5vw, 1.3rem);
@@ -80,8 +58,6 @@ h2 {
   line-height: 1.7;
   font-weight: 400;
 }
-
-/* === FORM CARD === */
 .meal-planner-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -95,7 +71,6 @@ h2 {
   max-width: 1000px;
   margin: 0 auto;
 }
-
 .meal-planner-card::before {
   content: "";
   position: absolute;
@@ -103,16 +78,10 @@ h2 {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--primary),
-    var(--accent),
-    var(--secondary)
-  );
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
   background-size: 300% 100%;
   animation: gradientMove 3s ease-in-out infinite;
 }
-
 @keyframes gradientMove {
   0%,
   100% {
@@ -122,18 +91,14 @@ h2 {
     background-position: 100% 0%;
   }
 }
-
 .meal-planner-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08);
 }
-
-/* === FORM ELEMENTS === */
 .form-step {
   display: block;
   animation: fadeInUp 0.6s ease-out;
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -144,11 +109,9 @@ h2 {
     transform: translateY(0);
   }
 }
-
 .form-group {
   margin-bottom: var(--space-6);
 }
-
 label {
   display: block;
   font-weight: 600;
@@ -156,14 +119,12 @@ label {
   color: var(--text-dark);
   font-size: 1.1rem;
 }
-
 .required-text {
   color: var(--secondary-dark);
   font-style: italic;
   font-size: 0.9rem;
   font-weight: 400;
 }
-
 input[type="text"],
 input[type="number"],
 select,
@@ -180,7 +141,6 @@ input[type="search"] {
   font-family: inherit;
   color: var(--text-dark);
 }
-
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus,
@@ -189,8 +149,6 @@ input[type="search"]:focus {
   box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08), var(--shadow-md);
   transform: translateY(-1px);
 }
-
-/* === CATEGORY TABS === */
 .category-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -199,7 +157,6 @@ input[type="search"]:focus {
   justify-content: center;
   padding: var(--space-2);
 }
-
 .category-tab {
   background: var(--white);
   border: 2px solid var(--gray-200);
@@ -214,7 +171,6 @@ input[type="search"]:focus {
   box-shadow: var(--shadow-sm);
   white-space: nowrap;
 }
-
 .category-tab:hover {
   background: var(--primary-light);
   color: var(--white);
@@ -222,22 +178,18 @@ input[type="search"]:focus {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
-
 .category-tab.active {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: var(--white);
   border-color: var(--primary-dark);
   box-shadow: var(--shadow-md);
 }
-
-/* === INGREDIENT GRID === */
 .ingredients-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-6);
 }
-
 .ingredient-item {
   background: var(--white);
   border: 2px solid var(--gray-200);
@@ -256,7 +208,6 @@ input[type="search"]:focus {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
-
 .ingredient-item::before {
   content: "";
   position: absolute;
@@ -266,42 +217,34 @@ input[type="search"]:focus {
   transition: opacity var(--transition) var(--easing);
   z-index: 0;
 }
-
 .ingredient-item:hover {
   border-color: var(--primary-light);
   transform: translateY(-4px) scale(1.02);
   box-shadow: var(--shadow-lg);
 }
-
 .ingredient-item.selected::before {
   opacity: 1;
 }
-
 .ingredient-item.selected {
   color: var(--white);
   border-color: var(--primary-dark);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
-
 .ingredient-icon,
 .ingredient-name {
   position: relative;
   z-index: 1;
 }
-
 .ingredient-icon {
   font-size: 2rem;
   margin-bottom: var(--space-2);
 }
-
 .ingredient-name {
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.2;
 }
-
-/* === SELECTED INGREDIENTS === */
 .selected-ingredients-container {
   margin-top: var(--space-6);
   background: linear-gradient(135deg, var(--gray-50), var(--white));
@@ -310,7 +253,6 @@ input[type="search"]:focus {
   border: 1px solid var(--gray-200);
   box-shadow: var(--shadow-sm);
 }
-
 .selected-items {
   display: flex;
   flex-wrap: wrap;
@@ -318,7 +260,6 @@ input[type="search"]:focus {
   min-height: 40px;
   padding: var(--space-2) 0;
 }
-
 .ingredient-pill {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: var(--white);
@@ -332,12 +273,10 @@ input[type="search"]:focus {
   box-shadow: var(--shadow-sm);
   transition: all var(--transition) var(--easing);
 }
-
 .ingredient-pill:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
-
 .remove-ingredient {
   cursor: pointer;
   font-weight: bold;
@@ -352,20 +291,16 @@ input[type="search"]:focus {
   background: rgba(255, 255, 255, 0.2);
   transition: all var(--transition-fast) var(--easing);
 }
-
 .remove-ingredient:hover {
   opacity: 1;
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
-
-/* === BUTTON === */
 .button-container {
   margin-top: var(--space-8);
   display: flex;
   justify-content: center;
 }
-
 .primary-button {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: var(--white);
@@ -382,7 +317,6 @@ input[type="search"]:focus {
   font-family: inherit;
   min-width: 180px;
 }
-
 .primary-button::before {
   content: "";
   position: absolute;
@@ -390,25 +324,16 @@ input[type="search"]:focus {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left var(--transition) var(--easing);
 }
-
 .primary-button:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
 }
-
 .primary-button:hover::before {
   left: 100%;
 }
-
-/* === RESULTS SECTION === */
 .result-box {
   margin-top: var(--space-12);
   background: rgba(255, 255, 255, 0.98);
@@ -420,7 +345,6 @@ input[type="search"]:focus {
   animation: slideInUp 0.6s ease-out;
   overflow: hidden;
 }
-
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -431,8 +355,6 @@ input[type="search"]:focus {
     transform: translateY(0);
   }
 }
-
-/* === RECOMMENDATION HEADER === */
 .recommendation-header {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: var(--white);
@@ -442,21 +364,14 @@ input[type="search"]:focus {
   position: relative;
   overflow: hidden;
 }
-
 .recommendation-header::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 70%
-  );
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
   background-size: 200% 200%;
   animation: shimmer 3s ease-in-out infinite;
 }
-
 @keyframes shimmer {
   0%,
   100% {
@@ -466,7 +381,6 @@ input[type="search"]:focus {
     background-position: 100% 100%;
   }
 }
-
 .recommendation-header h3 {
   font-size: clamp(1.4rem, 3vw, 2rem);
   margin-bottom: var(--space-4);
@@ -475,7 +389,6 @@ input[type="search"]:focus {
   z-index: 1;
   line-height: 1.2;
 }
-
 .recommendation-details {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -483,7 +396,6 @@ input[type="search"]:focus {
   position: relative;
   z-index: 1;
 }
-
 .detail-item {
   background: rgba(255, 255, 255, 0.2);
   padding: var(--space-3);
@@ -493,29 +405,23 @@ input[type="search"]:focus {
   transition: all var(--transition) var(--easing);
   text-align: center;
 }
-
 .detail-item:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
-
 .detail-item strong {
   display: block;
   font-size: 1.2rem;
   margin-bottom: var(--space-1);
   font-weight: 700;
 }
-
 .detail-item span {
   font-size: 0.9rem;
   opacity: 0.9;
 }
-
-/* === MENU SECTION === */
 .menu-section {
   padding: var(--space-6);
 }
-
 .menu-section h4 {
   font-size: clamp(1.2rem, 2.5vw, 1.6rem);
   color: var(--text-dark);
@@ -523,15 +429,12 @@ input[type="search"]:focus {
   text-align: center;
   font-weight: 700;
 }
-
-/* === ENHANCED MENU GRID === */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--space-5);
   margin-bottom: var(--space-6);
 }
-
 .menu-card {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -546,19 +449,16 @@ input[type="search"]:focus {
   flex-direction: column;
   gap: var(--space-3);
 }
-
 .menu-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
   border-color: var(--primary-light);
 }
-
 .menu-card-header {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
 }
-
 .select-menu {
   appearance: none;
   width: 22px;
@@ -572,12 +472,10 @@ input[type="search"]:focus {
   flex-shrink: 0;
   margin-top: var(--space-1);
 }
-
 .select-menu:checked {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   border-color: var(--primary-dark);
 }
-
 .select-menu:checked::after {
   content: "✓";
   font-size: 12px;
@@ -588,11 +486,9 @@ input[type="search"]:focus {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 .menu-info {
   flex: 1;
 }
-
 .menu-name {
   font-weight: 700;
   font-size: 1.1rem;
@@ -600,15 +496,12 @@ input[type="search"]:focus {
   margin-bottom: var(--space-2);
   line-height: 1.3;
 }
-
 .menu-detail {
   font-size: 0.95rem;
   color: var(--text-medium);
   margin-bottom: var(--space-3);
   line-height: 1.4;
 }
-
-/* === ENHANCED NUTRITION DETAILS === */
 .nutrisi-details {
   background: linear-gradient(135deg, var(--primary-light), var(--primary));
   color: var(--white);
@@ -621,7 +514,6 @@ input[type="search"]:focus {
   position: relative;
   overflow: hidden;
 }
-
 .nutrisi-details::before {
   content: "";
   position: absolute;
@@ -633,21 +525,18 @@ input[type="search"]:focus {
   border-radius: 50%;
   transform: translate(30%, -30%);
 }
-
 .nutrisi-details strong {
   color: var(--white);
   font-weight: 700;
   display: inline-block;
   margin-right: var(--space-2);
 }
-
 .nutrisi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-3);
   margin-top: var(--space-3);
 }
-
 .nutrisi-item {
   background: rgba(255, 255, 255, 0.15);
   padding: var(--space-3);
@@ -656,20 +545,16 @@ input[type="search"]:focus {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 .nutrisi-value {
   font-size: 1.1rem;
   font-weight: 700;
   display: block;
   margin-bottom: var(--space-1);
 }
-
 .nutrisi-label {
   font-size: 0.8rem;
   opacity: 0.9;
 }
-
-/* === ACTION BUTTONS === */
 .result-actions {
   padding: var(--space-5) var(--space-6);
   background: var(--gray-50);
@@ -679,7 +564,6 @@ input[type="search"]:focus {
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .action-button {
   background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
   color: var(--white);
@@ -693,17 +577,13 @@ input[type="search"]:focus {
   box-shadow: var(--shadow-sm);
   font-family: inherit;
 }
-
 .action-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
-
 .action-button.secondary {
   background: linear-gradient(135deg, var(--gray-400), var(--text-medium));
 }
-
-/* === RESPONSIVE DESIGN === */
 @media (max-width: 1200px) {
   .container {
     max-width: 1000px;
@@ -715,17 +595,14 @@ input[type="search"]:focus {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
-
 @media (max-width: 768px) {
   .meal-planner-section {
     padding: var(--space-8) var(--space-3);
     margin-top: 60px;
   }
-
   .meal-planner-card {
     padding: var(--space-5);
   }
-
   .category-tabs {
     justify-content: flex-start;
     overflow-x: auto;
@@ -733,117 +610,94 @@ input[type="search"]:focus {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-
   .category-tabs::-webkit-scrollbar {
     display: none;
   }
-
   .category-tab {
     flex-shrink: 0;
     padding: var(--space-2) var(--space-5);
     font-size: 0.9rem;
   }
-
   .ingredients-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: var(--space-3);
   }
-
   .ingredient-item {
     height: 100px;
     padding: var(--space-3);
   }
-
   .ingredient-icon {
     font-size: 1.7rem;
   }
-
   .menu-grid {
     grid-template-columns: 1fr;
     gap: var(--space-4);
   }
-
   .menu-card {
     padding: var(--space-4);
   }
-
   .recommendation-details {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: var(--space-2);
   }
-
   .nutrisi-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-2);
   }
-
   .result-actions {
     padding: var(--space-4);
     flex-direction: column;
     align-items: center;
   }
-
   .action-button {
     width: 100%;
     max-width: 280px;
   }
 }
-
 @media (max-width: 480px) {
   .meal-planner-section {
     padding: var(--space-6) var(--space-2);
     margin-top: 50px;
   }
-
   .meal-planner-card {
     padding: var(--space-4);
   }
-
   .ingredients-grid {
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     gap: var(--space-2);
   }
-
   .ingredient-item {
     height: 80px;
     padding: var(--space-2);
   }
-
   .ingredient-icon {
     font-size: 1.4rem;
   }
   .ingredient-name {
     font-size: 0.8rem;
   }
-
   .primary-button {
     padding: var(--space-3) var(--space-6);
     font-size: 1rem;
     min-width: 160px;
   }
-
   .menu-card {
     padding: var(--space-3);
   }
-
   .recommendation-header {
     padding: var(--space-4);
   }
   .menu-section {
     padding: var(--space-4);
   }
-
   .recommendation-details {
     grid-template-columns: 1fr;
   }
-
   .nutrisi-grid {
     grid-template-columns: 1fr;
     gap: var(--space-2);
   }
 }
-
-/* === LOADING & STATES === */
 .loading,
 .no-results-container,
 .error-message {
@@ -855,14 +709,12 @@ input[type="search"]:focus {
   margin: var(--space-4) 0;
   border: 1px solid var(--gray-200);
 }
-
 .loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
 }
-
 .loading::after {
   content: "";
   width: 32px;
@@ -873,7 +725,6 @@ input[type="search"]:focus {
   animation: spin 1s linear infinite;
   display: block;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -882,27 +733,21 @@ input[type="search"]:focus {
     transform: rotate(360deg);
   }
 }
-
 .loading-text {
   font-size: 1rem;
   color: var(--text-medium);
   font-weight: 500;
 }
-
-/* === ACCESSIBILITY === */
 *:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
-
-/* === PERFORMANCE === */
 .meal-planner-card,
 .ingredient-item,
 .menu-card {
   will-change: transform;
 }
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

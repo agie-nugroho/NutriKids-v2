@@ -69,7 +69,7 @@ const foodDetail = {
         title: "Belum Ada Menu",
         message:
           "Anda belum menyimpan menu apapun. Mulai jelajahi dan simpan menu favorit Anda!",
-        action: `<button class="primary-btn" onclick="window.location.hash='#/recommendation'">Cari Menu</button>`,
+        action: `<button class="primary-btn" onclick="window.location.hash='#/food-input'">Cari Menu</button>`,
       },
       error: {
         icon: "⚠️",
@@ -207,16 +207,13 @@ const foodDetail = {
   },
 
   initializeEventListeners() {
-    // Nutrition toggle functionality - Fixed to use event delegation
     document.addEventListener("click", (e) => {
-      // Handle nutrition toggle
       if (e.target.closest(".toggle-btn")) {
         const button = e.target.closest(".toggle-btn");
         const menuId = button.dataset.menuId;
         this.toggleNutrition(menuId);
       }
 
-      // Handle delete functionality
       if (e.target.closest(".delete-btn")) {
         const button = e.target.closest(".delete-btn");
         const menuId = button.dataset.id;
@@ -238,13 +235,11 @@ const foodDetail = {
     const isHidden = content.style.display === "none";
 
     if (isHidden) {
-      // Show content
       content.style.display = "block";
       toggleText.textContent = "Sembunyikan";
       toggleArrow.style.transform = "rotate(180deg)";
       button.classList.add("expanded");
     } else {
-      // Hide content
       content.style.display = "none";
       toggleText.textContent = "Lihat Detail";
       toggleArrow.style.transform = "rotate(0deg)";
@@ -280,7 +275,6 @@ const foodDetail = {
     const response = await ApiBackend.delete(`/save-menu/${menuId}`);
 
     if (response.status === 200) {
-      // Efek visual sebelum menghapus elemen
       menuCard.classList.add("removing");
 
       setTimeout(() => {
@@ -315,7 +309,6 @@ const foodDetail = {
       statsCards[0].textContent = remainingCards.length;
     }
 
-    // If no menus left, show empty state
     if (remainingCards.length === 0) {
       setTimeout(() => {
         const container = document.getElementById("food-info");
@@ -325,15 +318,12 @@ const foodDetail = {
   },
 
   showNotification(message, type = "info") {
-    // Create notification element
     const notification = document.createElement("div");
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
       <span class="notification-message">${message}</span>
       <button class="notification-close">×</button>
     `;
-
-    // Add to page
     document.body.appendChild(notification);
 
     // Show notification
@@ -345,7 +335,7 @@ const foodDetail = {
       setTimeout(() => notification.remove(), 300);
     }, 4000);
 
-    // Close button functionality
+    // Close button 
     notification
       .querySelector(".notification-close")
       .addEventListener("click", () => {
