@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 const FRONTEND_URL = [
   'http://localhost:8110',
-  'https://nutrikids-v2-production-a1b6.up.railway.app',
+  'nutrikids-v2-production-0b6d.up.railway.app',
 ];
 
 const init = async () => {
